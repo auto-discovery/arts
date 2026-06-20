@@ -28,6 +28,7 @@
     <nav class="toc-links" id="tocLinks">
       <a href="#abstract">Abstract</a>
       <a href="#method">Method</a>
+      <a href="#walkthrough">Walkthrough</a>
       <a href="#results">Results</a>
       <a href="#findings">Findings</a>
       <a href="#bibtex">Citation</a>
@@ -197,6 +198,47 @@
       </div>
     </section>
 
+    <!-- ===== WALKTHROUGH ===== -->
+    <section class="section band tint-sky" id="walkthrough">
+      <div class="container reveal">
+        <div class="sec-head">
+          <p class="sec-eyebrow">Walkthrough</p>
+          <h2 class="h2">One search step, step by step</h2>
+          <p>Play through a single expansion as the scientist inspects, reasons, selects, proposes and executes.</p>
+        </div>
+
+        <div class="walk" id="walk" data-step="0">
+          <div class="walk-stage">
+            <svg viewBox="0 0 360 300" role="img" aria-label="Animated ARTS search tree">
+              <g stroke-linecap="round">
+                <line class="wedge" id="e-a"  x1="180" y1="52" x2="84"  y2="150"/>
+                <line class="wedge" id="e-b"  x1="180" y1="52" x2="180" y2="150"/>
+                <line class="wedge" id="e-c"  x1="180" y1="52" x2="276" y2="150"/>
+                <line class="wedge hidden" id="e-nu" x1="84" y1="150" x2="84" y2="250"/>
+              </g>
+              <g class="wnode root" id="n-root"><circle cx="180" cy="52" r="26"/><text x="180" y="52" text-anchor="middle" dominant-baseline="central">0.00</text></g>
+              <g class="wnode cand" id="n-a"><circle cx="84"  cy="150" r="26"/><text x="84"  y="150" text-anchor="middle" dominant-baseline="central">0.10</text></g>
+              <g class="wnode cand" id="n-b"><circle cx="180" cy="150" r="26"/><text x="180" y="150" text-anchor="middle" dominant-baseline="central">0.15</text></g>
+              <g class="wnode cand" id="n-c"><circle cx="276" cy="150" r="26"/><text x="276" y="150" text-anchor="middle" dominant-baseline="central">0.47</text></g>
+              <g class="wnode new hidden" id="n-nu"><circle cx="84" cy="250" r="26"/><text x="84" y="250" text-anchor="middle" dominant-baseline="central">0.55</text></g>
+            </svg>
+          </div>
+          <div class="walk-panel">
+            <p class="walk-eyebrow" id="walkEyebrow"></p>
+            <h3 class="walk-title" id="walkTitle"></h3>
+            <div class="walk-body" id="walkBody"></div>
+            <div class="walk-controls">
+              <button class="walk-btn" id="walkPrev" type="button" aria-label="Previous step">&lsaquo; Prev</button>
+              <button class="walk-btn play" id="walkPlay" type="button" aria-label="Play">&#9654;&nbsp; Play</button>
+              <button class="walk-btn" id="walkNext" type="button" aria-label="Next step">Next &rsaquo;</button>
+              <div class="walk-dots" id="walkDots" role="tablist"></div>
+            </div>
+          </div>
+        </div>
+        <p class="walk-hint">Press Play to autoplay, click a dot, or use the &larr; / &rarr; keys.</p>
+      </div>
+    </section>
+
     <!-- ===== RESULTS ===== -->
     <section class="section band tint-mint" id="results">
       <div class="container reveal">
@@ -327,5 +369,6 @@
   </div><!-- /.page -->
 
   <script src="script.js"></script>
+  <script src="walkthrough.js"></script>
 </body>
 </html>
