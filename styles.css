@@ -648,3 +648,77 @@ a:hover { text-decoration: underline; }
   font-size: 15px; line-height: 1.6; margin: 16px auto 0; max-width: 880px;
 }
 .walk-caption strong { color: var(--ink); }
+
+/* ============================================================
+   CINEMATIC FIGURE ASSEMBLY
+   ============================================================ */
+.fig {
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.fig-stage {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background:
+    radial-gradient(640px 320px at 50% -8%, var(--accent-soft), transparent 70%),
+    radial-gradient(420px 240px at 100% 100%, var(--blue-soft), transparent 72%),
+    var(--bg);
+}
+.fig-scale { position: absolute; top: 0; left: 0; transform-origin: top left; }
+.fig-inner { position: relative; width: 960px; height: 560px; }
+
+.fig-comp { position: absolute; opacity: 0; will-change: transform, opacity; }
+.fig-comp.in { opacity: 1; }
+.fig-tree { width: 100%; height: 100%; }
+.fig-tree svg { width: 100%; height: 100%; display: block; }
+.fig-arrows { width: 100%; height: 100%; display: block; }
+
+.fig-panel {
+  width: 100%; height: 100%;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 14px 16px;
+  display: flex; flex-direction: column;
+}
+.fig-panel-h { font-weight: 700; font-size: 14px; letter-spacing: .06em; color: var(--ink); margin-bottom: 10px; }
+.fig-subs { display: flex; gap: 12px; flex: 1; }
+.fig-sub {
+  flex: 1; border-left: 3px solid var(--c, var(--accent));
+  background: var(--bg); border-radius: 11px; padding: 10px 12px;
+}
+.fig-sub-h { font-weight: 700; font-size: 14px; margin-bottom: 5px; color: var(--c, var(--accent)); }
+.fig-sub p { margin: 0; font-size: 13px; line-height: 1.45; color: var(--muted); }
+
+.fig-scrim {
+  position: absolute; inset: 0; z-index: 4;
+  background: var(--bg); opacity: 0;
+  transition: opacity .5s ease; pointer-events: none;
+}
+.fig-scrim.on { opacity: .82; }
+
+.fig-cap {
+  position: absolute; left: 24px; right: 24px; bottom: 20px; z-index: 7;
+  margin: 0; text-align: center;
+  font-size: clamp(15px, 1.7vw, 19px); line-height: 1.5; color: var(--ink);
+  opacity: 0; transition: opacity .4s ease;
+  text-shadow: 0 1px 10px var(--bg), 0 1px 2px var(--bg);
+}
+.fig-cap.show { opacity: 1; }
+.fig-cap strong { color: var(--accent-deep); }
+.fig .walk-playpause { z-index: 8; }
+
+@media (max-width: 640px) {
+  .fig-cap { bottom: 12px; font-size: 14px; }
+  .fig-sub p { font-size: 11px; }
+}
+
+/* play/pause icon toggling (applies to any [data-playing] container) */
+[data-playing="true"]  .i-play  { display: none; }
+[data-playing="false"] .i-pause { display: none; }
