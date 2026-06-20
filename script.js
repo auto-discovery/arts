@@ -1,47 +1,50 @@
-// ARTS project page — tiny, dependency-free interactivity.
+/* ARTS project page — interactions (dependency-free) */
 (function () {
   'use strict';
 
-  // ---- BibTeX copy-to-clipboard ----
-  var btn = document.getElementById('copyBtn');
-  var bib = document.getElementById('bibtex');
-
-  if (btn && bib) {
-    btn.addEventListener('click', function () {
-      var text = bib.innerText;
-
-      var done = function () {
-        var orig = 'Copy';
-        btn.textContent = 'Copied!';
-        btn.classList.add('copied');
-        setTimeout(function () {
-          btn.textContent = orig;
-          btn.classList.remove('copied');
-        }, 1600);
-      };
-
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(done, fallbackCopy);
-      } else {
-        fallbackCopy();
-      }
-
-      function fallbackCopy() {
-        var ta = document.createElement('textarea');
-        ta.value = text;
-        ta.style.position = 'fixed';
-        ta.style.opacity = '0';
-        document.body.appendChild(ta);
-        ta.select();
-        try { document.execCommand('copy'); done(); } catch (e) { /* no-op */ }
-        document.body.removeChild(ta);
-      }
-    });
+  /* ---- nav: shadow on scroll ---- */
+  var nav = document.getElementById('nav');
+  if (nav) {
+    var onScroll = function () { nav.classList.toggle('scrolled', window.scrollY > 8); };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
   }
 
-  // ---- Smooth-scroll for in-page anchors (graceful even where CSS smooth-scroll is unsupported) ----
-  var links = document.querySelectorAll('a[href^="#"]');
-  Array.prototype.forEach.call(links, function (a) {
+  /* ---- scrollspy: highlight active section in nav ---- */
+  var links = Array.prototype.slice.call(document.querySelectorAll('.nav-links a[href^="#"]'));
+  var map = new Map();
+  links.forEach(function (a) {
+    var sec = document.getElementById(a.getAttribute('href').slice(1));
+    if (sec) map.set(sec, a);
+  });
+  if (map.size && 'IntersectionObserver' in window) {
+    var spy = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          links.forEach(function (l) { l.classList.remove('active'); });
+          var a = map.get(e.target);
+          if (a) a.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+    map.forEach(function (_, sec) { spy.observe(sec); });
+  }
+
+  /* ---- scroll reveal ---- */
+  var reveals = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window && reveals.length) {
+    var ro = new IntersectionObserver(function (entries, obs) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); }
+      });
+    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.08 });
+    Array.prototype.forEach.call(reveals, function (el) { ro.observe(el); });
+  } else {
+    Array.prototype.forEach.call(reveals, function (el) { el.classList.add('in'); });
+  }
+
+  /* ---- smooth-scroll for in-page anchors ---- */
+  Array.prototype.forEach.call(document.querySelectorAll('a[href^="#"]'), function (a) {
     a.addEventListener('click', function (e) {
       var id = a.getAttribute('href');
       if (id === '#' || id.length < 2) return;
@@ -52,4 +55,28 @@
       history.replaceState(null, '', id);
     });
   });
+
+  /* ---- copy BibTeX ---- */
+  var btn = document.getElementById('copyBtn');
+  var bib = document.getElementById('bibtex');
+  if (btn && bib) {
+    btn.addEventListener('click', function () {
+      var text = bib.innerText.trim();
+      var done = function () {
+        btn.textContent = 'Copied ✓';
+        btn.classList.add('copied');
+        setTimeout(function () { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1800);
+      };
+      var fallback = function () {
+        var ta = document.createElement('textarea');
+        ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); done(); } catch (_) {}
+        document.body.removeChild(ta);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, fallback);
+      } else { fallback(); }
+    });
+  }
 })();
