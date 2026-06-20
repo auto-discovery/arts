@@ -676,7 +676,7 @@ a:hover { text-decoration: underline; }
 .fig-grouptitle {
   width: 100%; height: 100%;
   display: flex; align-items: center; justify-content: center;
-  font-weight: 700; font-size: 22px; letter-spacing: .05em;
+  font-weight: 700; font-size: 26px; letter-spacing: .05em;
   text-transform: uppercase; color: var(--ink);
 }
 /* individual Inspect / Reason / Propose / Execute cards */
@@ -689,14 +689,14 @@ a:hover { text-decoration: underline; }
   box-shadow: var(--shadow);
   padding: 10px 12px;
 }
-.fig-sub-h { font-weight: 700; font-size: 21px; margin-bottom: 4px; color: var(--c, var(--accent)); }
-.fig-sub-b { font-size: 19px; line-height: 1.3; color: var(--ink); }
+.fig-sub-h { font-weight: 700; font-size: 25px; margin-bottom: 4px; color: var(--c, var(--accent)); }
+.fig-sub-b { font-size: 23px; line-height: 1.3; color: var(--ink); }
 .fig-sub-b strong { color: var(--c, var(--accent)); }
 .fig-sub-b em { font-style: italic; color: var(--muted); }
-.fig-pp { font-size: 19px; line-height: 1.28; color: var(--ink); margin-bottom: 5px; }
+.fig-pp { font-size: 22px; line-height: 1.28; color: var(--ink); margin-bottom: 5px; }
 
 /* the animation gets more width than the text column */
-.fig-wrap { max-width: 1280px; }
+.fig-wrap { max-width: 1360px; padding-left: 14px; padding-right: 14px; }
 
 .fig-comp { position: absolute; opacity: 0; will-change: transform, opacity; }
 .fig-comp.in { opacity: 1; }
@@ -752,23 +752,23 @@ a:hover { text-decoration: underline; }
 .fig-comp { transform-origin: 0 0; }
 
 /* Inspect rows with training-curve sparklines */
-.fig-irow { display: grid; grid-template-columns: auto 64px 1fr; align-items: center; gap: 13px; margin: 6px 0; }
-.fig-chip { font-weight: 700; font-size: 17px; color: var(--coral); background: var(--coral-soft);
+.fig-irow { display: grid; grid-template-columns: auto 76px 1fr; align-items: center; gap: 13px; margin: 6px 0; }
+.fig-chip { font-weight: 700; font-size: 21px; color: var(--coral); background: var(--coral-soft);
   border-radius: 6px; padding: 2px 9px; text-align: center; }
-.fig-spark { width: 64px; height: 28px; display: block; }
-.fig-il { font-size: 17px; color: var(--muted); white-space: nowrap; }
+.fig-spark { width: 76px; height: 32px; display: block; }
+.fig-il { font-size: 21px; color: var(--muted); white-space: nowrap; }
 
 /* Propose probability bars */
 .fig-pp { margin-bottom: 9px; }
 .fig-bar { margin: 5px 0; }
-.fig-bar-top { display: flex; justify-content: space-between; font-size: 18px; }
+.fig-bar-top { display: flex; justify-content: space-between; font-size: 22px; }
 .fig-bar-val { font-weight: 700; color: var(--ink); }
 .fig-bar-track { height: 7px; border-radius: 99px; background: var(--pink-soft); margin-top: 3px; overflow: hidden; }
 .fig-bar-fill { height: 100%; background: var(--pink); border-radius: 99px; }
 
 /* Execute chips + new-node line */
 .fig-rwrs { display: flex; gap: 6px; margin: 6px 0 4px; }
-.fig-rwrs span { font-size: 15px; font-weight: 600; color: var(--green);
+.fig-rwrs span { font-size: 18px; font-weight: 600; color: var(--green);
   border: 1px solid var(--green); border-radius: 6px; padding: 2px 8px; }
-.fig-newnode { font-size: 18px; font-weight: 600; color: var(--blue); }
+.fig-newnode { font-size: 22px; font-weight: 600; color: var(--blue); }
 .fig-newnode strong { color: var(--blue); }

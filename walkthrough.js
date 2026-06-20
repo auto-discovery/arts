@@ -6,7 +6,7 @@
   var fig = document.getElementById('fig');
   if (!fig) return;
 
-  var W = 1230, H = 690;
+  var W = 1560, H = 770;
   var inner   = document.getElementById('figInner');
   var scaleEl = document.getElementById('figScale');
   var stageEl = document.getElementById('figStage');
@@ -67,8 +67,8 @@
     return '<svg viewBox="0 0 ' + W + ' ' + H + '" class="fig-arrows" preserveAspectRatio="none">' +
       '<defs><marker id="ahm9" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">' +
       '<path d="M0,0 L7,3 L0,6 Z" fill="#b9b2a6"/></marker></defs>' +
-      '<path d="M48,520 L30,520 L30,178 L46,178" fill="none" stroke="#b9b2a6" stroke-width="2.4" marker-end="url(#ahm9)"/>' +
-      '<text x="22" y="380" font-size="13" fill="#8a8478" transform="rotate(-90 22,380)">repeat until budget runs out</text></svg>';
+      '<path d="M24,560 L8,560 L8,238 L22,238" fill="none" stroke="#b9b2a6" stroke-width="2.4" marker-end="url(#ahm9)"/>' +
+      '<text x="2" y="430" font-size="13" fill="#8a8478" transform="rotate(-90 2,430)">repeat until budget runs out</text></svg>';
   }
 
   var INSPECT = '<div class="fig-pp">Reads each node’s logs and reasons <em>why</em> it failed.</div>' +
@@ -84,24 +84,24 @@
   /* ---------- pieces: natW/natH = large size, slot {x,y,s} = settled ---------- */
   var P = {
     // arrows first (paint behind), full-stage, settle at (0,0) scale 1
-    aSel:    { natW: W, natH: H, x: 0, y: 0, s: 1, flat: true, html: arrow(1, 'M190,180 L214,168') },
-    aB:      { natW: W, natH: H, x: 0, y: 0, s: 1, flat: true, html: arrow(2, 'M1016,172 L1040,166') },
-    aExp:    { natW: W, natH: H, x: 0, y: 0, s: 1, flat: true, html: arrow(3, 'M1112,262 C1112,400 1050,510 1008,510') },
-    aC:      { natW: W, natH: H, x: 0, y: 0, s: 1, flat: true, html: arrow(4, 'M358,540 L190,540') },
+    aSel:    { natW: W, natH: H, x: 0, y: 0, s: 1, flat: true, html: arrow(1, 'M256,238 L288,232') },
+    aB:      { natW: W, natH: H, x: 0, y: 0, s: 1, flat: true, html: arrow(2, 'M1274,238 L1306,232') },
+    aExp:    { natW: W, natH: H, x: 0, y: 0, s: 1, flat: true, html: arrow(3, 'M1423,378 C1423,470 1250,560 1150,560') },
+    aC:      { natW: W, natH: H, x: 0, y: 0, s: 1, flat: true, html: arrow(4, 'M428,586 L256,586') },
     aRepeat: { natW: W, natH: H, x: 0, y: 0, s: 1, flat: true, html: arrowRepeat() },
 
-    treeA:   { natW: 250, natH: 300, x: 48,   y: 92,  s: 0.56, html: tree({ a: 'cand', b: 'cand', c: 'cand', nu: 'hidden' }, false) },
-    selHead: { natW: 480, natH: 64,  x: 394,  y: 24,  s: 0.92, html: header('Node&nbsp;Selection') },
-    inspect: { natW: 340, auto: true, x: 216, y: 90,  s: 0.90, html: card('var(--accent)', '🔍 Inspect', INSPECT) },
-    magTree: { natW: 250, natH: 300, x: 550,  y: 100, s: 0.52, html: tree({ a: 'cand', b: 'cand', c: 'cand', nu: 'hidden' }, true) },
-    reason:  { natW: 340, auto: true, x: 708, y: 90,  s: 0.90, html: card('var(--blue)', '🧠 Reason',
+    treeA:   { natW: 230, natH: 270, x: 24,   y: 104, s: 1, html: tree({ a: 'cand', b: 'cand', c: 'cand', nu: 'hidden' }, false) },
+    selHead: { natW: 460, natH: 60,  x: 551,  y: 30,  s: 1, html: header('Node&nbsp;Selection') },
+    inspect: { natW: 340, auto: true, x: 290, y: 102, s: 1, html: card('var(--accent)', '🔍 Inspect', INSPECT) },
+    magTree: { natW: 230, natH: 270, x: 666,  y: 104, s: 1, html: tree({ a: 'cand', b: 'cand', c: 'cand', nu: 'hidden' }, true) },
+    reason:  { natW: 340, auto: true, x: 932, y: 102, s: 1, html: card('var(--blue)', '🧠 Reason',
                  '0.47 is the highest score an MLP can reach. The new architecture has the highest potential.<br><strong>&rarr; Select 0.10</strong>') },
-    treeB:   { natW: 250, natH: 300, x: 1042, y: 92,  s: 0.56, html: tree({ a: 'selected', b: 'cand', c: 'cand', nu: 'hidden' }, false) },
+    treeB:   { natW: 230, natH: 270, x: 1308, y: 104, s: 1, html: tree({ a: 'selected', b: 'cand', c: 'cand', nu: 'hidden' }, false) },
 
-    expHead: { natW: 480, natH: 64,  x: 467,  y: 386, s: 0.9,  html: header('Node&nbsp;Expansion') },
-    propose: { natW: 340, auto: true, x: 360, y: 426, s: 0.90, html: card('var(--pink)', '🎲 Propose', PROPOSE) },
-    execute: { natW: 340, auto: true, x: 700, y: 426, s: 0.90, html: card('var(--green)', '⚙️ Execute', EXECUTE) },
-    treeC:   { natW: 250, natH: 300, x: 48,   y: 426, s: 0.56, html: tree({ a: 'selected', b: 'cand', c: 'cand', nu: 'new' }, false) }
+    expHead: { natW: 460, natH: 60,  x: 558,  y: 384, s: 1, html: header('Node&nbsp;Expansion') },
+    propose: { natW: 340, auto: true, x: 430, y: 456, s: 1, html: card('var(--pink)', '🎲 Propose', PROPOSE) },
+    execute: { natW: 340, auto: true, x: 806, y: 456, s: 1, html: card('var(--green)', '⚙️ Execute', EXECUTE) },
+    treeC:   { natW: 230, natH: 270, x: 24,   y: 458, s: 1, html: tree({ a: 'selected', b: 'cand', c: 'cand', nu: 'new' }, false) }
   };
 
   var BEATS = [
@@ -134,9 +134,9 @@
 
   function fit() {
     var s = stageEl.clientWidth / W;
-    var top = 16;                                   // crop the empty space above the figure
+    var top = 18;                                   // crop the empty space above the figure
     scaleEl.style.transform = 'translateY(' + (-top * s) + 'px) scale(' + s + ')';
-    stageEl.style.height = ((H - top - 24) * s) + 'px';
+    stageEl.style.height = ((H - top - 16) * s) + 'px';
   }
   fit();
   window.addEventListener('resize', fit);
