@@ -28,7 +28,6 @@
     <nav class="toc-links" id="tocLinks">
       <a href="#abstract">Abstract</a>
       <a href="#method">Method</a>
-      <a href="#walkthrough">Walkthrough</a>
       <a href="#results">Results</a>
       <a href="#findings">Findings</a>
       <a href="#bibtex">Citation</a>
@@ -92,18 +91,41 @@
       </div>
     </header>
 
-    <!-- ===== HERO FIGURE ===== -->
+    <!-- ===== ANIMATED FIGURE 1 (autoplaying hero teaser) ===== -->
     <section class="section tight reveal">
       <div class="container">
-        <figure class="figcard hero-fig">
-          <img src="assets/fig-main.png" alt="A single search step of ARTS: the scientist inspects the candidate nodes, reasons about why each scored as it did, selects a node, and expands it with diverse hypotheses." />
-          <figcaption>
-            <strong>A single search step of ARTS.</strong> Each node is one validated experiment (hypothesis, code, logs, score).
-            Starting from the current tree, the <span class="mono">scientist</span> inspects the candidates and reasons about
-            <em>why</em> each scored as it did, selects the most promising node rather than the highest-scoring one, then proposes
-            diverse hypotheses and executes the chosen one. Repeat until the budget runs out.
-          </figcaption>
-        </figure>
+        <div class="walk" id="walk" data-step="0" data-playing="true">
+          <div class="walk-stage">
+            <svg viewBox="0 0 360 300" role="img" aria-label="Animated ARTS search tree">
+              <g stroke-linecap="round">
+                <line class="wedge" id="e-a"  x1="180" y1="52" x2="84"  y2="150"/>
+                <line class="wedge" id="e-b"  x1="180" y1="52" x2="180" y2="150"/>
+                <line class="wedge" id="e-c"  x1="180" y1="52" x2="276" y2="150"/>
+                <line class="wedge hidden" id="e-nu" x1="84" y1="150" x2="84" y2="250"/>
+              </g>
+              <g class="wnode root" id="n-root"><circle cx="180" cy="52" r="26"/><text x="180" y="52" text-anchor="middle" dominant-baseline="central">0.00</text></g>
+              <g class="wnode cand" id="n-a"><circle cx="84"  cy="150" r="26"/><text x="84"  y="150" text-anchor="middle" dominant-baseline="central">0.10</text></g>
+              <g class="wnode cand" id="n-b"><circle cx="180" cy="150" r="26"/><text x="180" y="150" text-anchor="middle" dominant-baseline="central">0.15</text></g>
+              <g class="wnode cand" id="n-c"><circle cx="276" cy="150" r="26"/><text x="276" y="150" text-anchor="middle" dominant-baseline="central">0.47</text></g>
+              <g class="wnode new hidden" id="n-nu"><circle cx="84" cy="250" r="26"/><text x="84" y="250" text-anchor="middle" dominant-baseline="central">0.55</text></g>
+            </svg>
+            <button class="walk-playpause" id="walkPlay" type="button" aria-label="Play or pause">
+              <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+              <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+            </button>
+          </div>
+          <div class="walk-panel">
+            <p class="walk-eyebrow" id="walkEyebrow"></p>
+            <h3 class="walk-title" id="walkTitle"></h3>
+            <div class="walk-body" id="walkBody"></div>
+          </div>
+          <div class="walk-bar"><span class="walk-bar-fill" id="walkProgress"></span></div>
+        </div>
+        <p class="walk-caption">
+          <strong>A single search step of ARTS.</strong> The <span class="mono">scientist</span> inspects the candidates, reasons about
+          <em>why</em> each scored as it did, selects the most promising node rather than the highest-scoring one, then proposes diverse
+          hypotheses and executes the chosen one. Plays automatically &mdash; pause anytime.
+        </p>
       </div>
     </section>
 
@@ -195,47 +217,6 @@
             </p>
           </article>
         </div>
-      </div>
-    </section>
-
-    <!-- ===== WALKTHROUGH ===== -->
-    <section class="section band tint-sky" id="walkthrough">
-      <div class="container reveal">
-        <div class="sec-head">
-          <p class="sec-eyebrow">Walkthrough</p>
-          <h2 class="h2">One search step, step by step</h2>
-          <p>Play through a single expansion as the scientist inspects, reasons, selects, proposes and executes.</p>
-        </div>
-
-        <div class="walk" id="walk" data-step="0">
-          <div class="walk-stage">
-            <svg viewBox="0 0 360 300" role="img" aria-label="Animated ARTS search tree">
-              <g stroke-linecap="round">
-                <line class="wedge" id="e-a"  x1="180" y1="52" x2="84"  y2="150"/>
-                <line class="wedge" id="e-b"  x1="180" y1="52" x2="180" y2="150"/>
-                <line class="wedge" id="e-c"  x1="180" y1="52" x2="276" y2="150"/>
-                <line class="wedge hidden" id="e-nu" x1="84" y1="150" x2="84" y2="250"/>
-              </g>
-              <g class="wnode root" id="n-root"><circle cx="180" cy="52" r="26"/><text x="180" y="52" text-anchor="middle" dominant-baseline="central">0.00</text></g>
-              <g class="wnode cand" id="n-a"><circle cx="84"  cy="150" r="26"/><text x="84"  y="150" text-anchor="middle" dominant-baseline="central">0.10</text></g>
-              <g class="wnode cand" id="n-b"><circle cx="180" cy="150" r="26"/><text x="180" y="150" text-anchor="middle" dominant-baseline="central">0.15</text></g>
-              <g class="wnode cand" id="n-c"><circle cx="276" cy="150" r="26"/><text x="276" y="150" text-anchor="middle" dominant-baseline="central">0.47</text></g>
-              <g class="wnode new hidden" id="n-nu"><circle cx="84" cy="250" r="26"/><text x="84" y="250" text-anchor="middle" dominant-baseline="central">0.55</text></g>
-            </svg>
-          </div>
-          <div class="walk-panel">
-            <p class="walk-eyebrow" id="walkEyebrow"></p>
-            <h3 class="walk-title" id="walkTitle"></h3>
-            <div class="walk-body" id="walkBody"></div>
-            <div class="walk-controls">
-              <button class="walk-btn" id="walkPrev" type="button" aria-label="Previous step">&lsaquo; Prev</button>
-              <button class="walk-btn play" id="walkPlay" type="button" aria-label="Play">&#9654;&nbsp; Play</button>
-              <button class="walk-btn" id="walkNext" type="button" aria-label="Next step">Next &rsaquo;</button>
-              <div class="walk-dots" id="walkDots" role="tablist"></div>
-            </div>
-          </div>
-        </div>
-        <p class="walk-hint">Press Play to autoplay, click a dot, or use the &larr; / &rarr; keys.</p>
       </div>
     </section>
 

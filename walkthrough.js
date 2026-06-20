@@ -1,4 +1,4 @@
-/* ARTS — interactive Figure 1 walkthrough */
+/* ARTS — autoplaying, video-style walkthrough of Figure 1 */
 (function () {
   'use strict';
   var root = document.getElementById('walk');
@@ -7,12 +7,10 @@
   var eyebrowEl = document.getElementById('walkEyebrow');
   var titleEl   = document.getElementById('walkTitle');
   var bodyEl    = document.getElementById('walkBody');
-  var prevBtn   = document.getElementById('walkPrev');
-  var nextBtn   = document.getElementById('walkNext');
   var playBtn   = document.getElementById('walkPlay');
-  var dotsWrap  = document.getElementById('walkDots');
+  var stage     = root.querySelector('.walk-stage');
+  var prog      = document.getElementById('walkProgress');
 
-  // node id -> class for each step ('hidden' to hide the new node)
   var STEPS = [
     {
       eyebrow: 'Tree to expand',
@@ -75,80 +73,76 @@
   function setClass(id, cls) {
     var el = document.getElementById('n-' + id);
     if (!el) return;
-    var hidden = cls.indexOf('hidden') !== -1;
     el.setAttribute('class', 'wnode ' + cls);
-    // matching edge for the new node
     if (id === 'nu') {
       var e = document.getElementById('e-nu');
-      if (e) e.setAttribute('class', 'wedge' + (hidden ? ' hidden' : ''));
+      if (e) e.setAttribute('class', 'wedge' + (cls.indexOf('hidden') !== -1 ? ' hidden' : ''));
     }
   }
 
+  var N = STEPS.length;
   var i = 0, timer = null, playing = false;
-  var DUR = 2300;
+  var DUR = 2600;
 
-  // dots
-  STEPS.forEach(function (_, k) {
-    var b = document.createElement('button');
-    b.type = 'button';
-    b.setAttribute('aria-label', 'Step ' + (k + 1));
-    b.addEventListener('click', function () { stop(); go(k); });
-    dotsWrap.appendChild(b);
-  });
+  function paintProgress(animate) {
+    var to = ((i + 1) / N) * 100;
+    if (animate) {
+      prog.style.transition = 'none';
+      prog.style.width = (i / N) * 100 + '%';
+      void prog.offsetWidth;                  // reflow
+      prog.style.transition = 'width ' + DUR + 'ms linear';
+      prog.style.width = to + '%';
+    } else {
+      var w = getComputedStyle(prog).width;   // freeze where it is
+      prog.style.transition = 'none';
+      prog.style.width = w;
+    }
+  }
 
-  function render() {
+  function render(animate) {
     var s = STEPS[i];
     root.setAttribute('data-step', i);
     eyebrowEl.textContent = s.eyebrow;
     titleEl.textContent = s.title;
     bodyEl.innerHTML = s.body;
     setClass('a', s.n.a); setClass('b', s.n.b); setClass('c', s.n.c); setClass('nu', s.n.nu);
-    prevBtn.disabled = (i === 0);
-    nextBtn.disabled = (i === STEPS.length - 1);
-    Array.prototype.forEach.call(dotsWrap.children, function (d, k) {
-      d.className = (k === i ? 'on' : '');
-    });
+    paintProgress(animate);
   }
 
-  function go(k) { i = Math.max(0, Math.min(STEPS.length - 1, k)); render(); }
+  function go(k, animate) { i = ((k % N) + N) % N; render(animate); }
 
   function play() {
     playing = true;
-    playBtn.innerHTML = '&#10074;&#10074;&nbsp; Pause';
+    root.setAttribute('data-playing', 'true');
     clearInterval(timer);
-    timer = setInterval(function () {
-      if (i >= STEPS.length - 1) { go(0); } else { go(i + 1); }
-    }, DUR);
+    render(true);                              // animate current step's progress
+    timer = setInterval(function () { go(i + 1, true); }, DUR);
   }
   function stop() {
     playing = false;
-    playBtn.innerHTML = '&#9654;&nbsp; Play';
+    root.setAttribute('data-playing', 'false');
     clearInterval(timer);
+    paintProgress(false);                      // freeze the bar
   }
   function toggle() { playing ? stop() : play(); }
 
-  prevBtn.addEventListener('click', function () { stop(); go(i - 1); });
-  nextBtn.addEventListener('click', function () { stop(); go(i + 1); });
-  playBtn.addEventListener('click', toggle);
+  playBtn.addEventListener('click', function (e) { e.stopPropagation(); toggle(); });
+  stage.addEventListener('click', toggle);     // click the video to pause/play
 
-  // keyboard ← / → when the widget is on screen
-  document.addEventListener('keydown', function (e) {
-    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
-    var r = root.getBoundingClientRect();
-    if (r.bottom < 0 || r.top > window.innerHeight) return;
-    e.preventDefault(); stop();
-    go(i + (e.key === 'ArrowRight' ? 1 : -1));
-  });
-
-  // autostart once it scrolls into view
-  render();
+  // start automatically; (re)start when it scrolls into view the first time
+  render(false);
+  play();
   if ('IntersectionObserver' in window) {
-    var started = false;
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (en) {
-        if (en.isIntersecting && !started) { started = true; play(); }
+        if (!en.isIntersecting && playing) { stop(); }       // pause when off-screen
+        else if (en.isIntersecting && !playing && !root.dataset.userPaused) { play(); }
       });
-    }, { threshold: 0.4 });
+    }, { threshold: 0.25 });
     io.observe(root);
   }
+
+  // remember an explicit user pause so we don't auto-resume on scroll
+  playBtn.addEventListener('click', function () { root.dataset.userPaused = playing ? '' : '1'; });
+  stage.addEventListener('click', function () { root.dataset.userPaused = playing ? '' : '1'; });
 })();

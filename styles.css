@@ -624,3 +624,27 @@ a:hover { text-decoration: underline; }
   .walk-stage { border-right: none; border-bottom: 1px solid var(--border); }
   .walk-panel { min-height: 0; }
 }
+
+/* video-style controls for the autoplaying walkthrough */
+.walk { position: relative; }
+.walk-stage { cursor: pointer; }
+.walk-playpause {
+  position: absolute; left: 16px; bottom: 16px; z-index: 3;
+  width: 46px; height: 46px; border-radius: 50%; border: none; cursor: pointer;
+  background: rgba(27,26,23,.82); color: #fff;
+  backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+  display: grid; place-items: center; box-shadow: var(--shadow);
+  transition: background .15s ease, transform .1s ease;
+}
+.walk-playpause:hover { background: var(--accent); }
+.walk-playpause:active { transform: scale(.94); }
+.walk-playpause svg { width: 20px; height: 20px; fill: currentColor; }
+.walk[data-playing="true"]  .i-play  { display: none; }
+.walk[data-playing="false"] .i-pause { display: none; }
+.walk-bar { grid-column: 1 / -1; height: 4px; background: var(--border); }
+.walk-bar-fill { display: block; height: 100%; width: 0; background: var(--accent); }
+.walk-caption {
+  text-align: center; color: var(--muted);
+  font-size: 15px; line-height: 1.6; margin: 16px auto 0; max-width: 880px;
+}
+.walk-caption strong { color: var(--ink); }
