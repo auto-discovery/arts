@@ -2,16 +2,8 @@
 (function () {
   'use strict';
 
-  /* ---- nav: shadow on scroll ---- */
-  var nav = document.getElementById('nav');
-  if (nav) {
-    var onScroll = function () { nav.classList.toggle('scrolled', window.scrollY > 8); };
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-  }
-
-  /* ---- scrollspy: highlight active section in nav ---- */
-  var links = Array.prototype.slice.call(document.querySelectorAll('.nav-links a[href^="#"]'));
+  /* ---- scrollspy: highlight active section in the side TOC ---- */
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc-links a[href^="#"]'));
   var map = new Map();
   links.forEach(function (a) {
     var sec = document.getElementById(a.getAttribute('href').slice(1));

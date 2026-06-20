@@ -39,10 +39,11 @@
   --band-blush: #fbeff4;
   --band-sky:   #eef3fc;
 
-  /* type */
-  --serif: 'Newsreader', Georgia, 'Times New Roman', serif;
-  --sans:  'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  --mono:  'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  /* type — ONE typeface everywhere: STIX Two Text (Times-metric, the NeurIPS paper font) */
+  --paper: 'STIX Two Text', 'Times New Roman', Times, serif;
+  --serif: var(--paper);
+  --sans:  var(--paper);
+  --mono:  var(--paper);
 
   /* shape */
   --radius:    18px;
@@ -88,74 +89,90 @@ a:hover { text-decoration: underline; }
 }
 .container.narrow { max-width: var(--readw); }
 
-/* ---------- NAV ---------- */
-.nav {
-  position: sticky;
-  top: 0;
-  z-index: 60;
-  background: rgba(251, 250, 247, 0.72);
-  backdrop-filter: saturate(180%) blur(14px);
-  -webkit-backdrop-filter: saturate(180%) blur(14px);
-  border-bottom: 1px solid transparent;
-  transition: border-color .2s ease, box-shadow .2s ease;
-}
-.nav.scrolled {
-  border-bottom-color: var(--border);
-  box-shadow: 0 1px 0 rgba(27,26,23,.02);
-}
-.nav-inner {
-  max-width: var(--maxw);
-  margin: 0 auto;
-  padding: 0 28px;
-  height: 64px;
+/* ---------- SIDE TOC ---------- */
+:root { --toc-w: 240px; }
+
+.toc {
+  position: fixed;
+  left: 0; top: 0;
+  width: var(--toc-w);
+  height: 100vh;
+  padding: 40px 30px;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 26px;
+  border-right: 1px solid var(--border);
+  background: var(--bg);
+  z-index: 60;
 }
-.nav-brand {
-  font-family: var(--mono);
-  font-weight: 700;
-  font-size: 19px;
-  letter-spacing: -0.04em;
+.toc-brand {
+  font-weight: 600;
+  font-size: 21px;
+  letter-spacing: -0.01em;
   color: var(--ink);
   display: inline-flex;
   align-items: center;
-  gap: 9px;
+  gap: 10px;
 }
-.nav-brand:hover { text-decoration: none; }
-.nav-brand .dot {
+.toc-brand:hover { text-decoration: none; }
+.toc-brand .dot {
   width: 9px; height: 9px; border-radius: 50%;
   background: var(--accent);
   box-shadow: 0 0 0 4px var(--accent-soft);
 }
-.nav-links { display: flex; align-items: center; gap: 26px; }
-.nav-links a {
+.toc-links { display: flex; flex-direction: column; gap: 2px; }
+.toc-links a {
   position: relative;
   color: var(--muted);
-  font-weight: 500;
-  font-size: 15px;
-  padding: 4px 0;
+  font-size: 16px;
+  padding: 5px 0 5px 14px;
+  border-left: 2px solid transparent;
+  transition: color .15s ease, border-color .15s ease;
 }
-.nav-links a:hover { color: var(--ink); text-decoration: none; }
-.nav-links a.active { color: var(--accent); }
-.nav-links a.active::after {
-  content: "";
-  position: absolute; left: 0; right: 0; bottom: -2px;
-  height: 2px; border-radius: 2px;
-  background: var(--accent);
-}
-.nav-links .nav-cta {
-  color: #fff;
-  background: var(--ink);
-  padding: 8px 15px;
-  border-radius: 999px;
+.toc-links a:hover { color: var(--ink); text-decoration: none; }
+.toc-links a.active {
+  color: var(--ink);
   font-weight: 600;
+  border-left-color: var(--ink);
 }
-.nav-links .nav-cta:hover { background: var(--accent); color: #fff; }
-.nav-links .nav-cta::after { display: none; }
-@media (max-width: 720px) {
-  .nav-links { gap: 16px; }
-  .nav-hide-sm { display: none; }
+.toc-foot {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14.5px;
+}
+.toc-foot a { color: var(--muted); }
+.toc-foot a:hover { color: var(--accent); text-decoration: none; }
+
+/* content sits to the right of the fixed TOC */
+.page { margin-left: var(--toc-w); }
+
+/* mobile: TOC collapses to a sticky top bar */
+.toc-toggle { display: none; }
+@media (max-width: 900px) {
+  :root { --toc-w: 0px; }
+  .toc {
+    position: sticky;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    height: auto;
+    padding: 12px 20px;
+    gap: 18px;
+    overflow-x: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    background: rgba(251,250,247,.85);
+    backdrop-filter: saturate(180%) blur(12px);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+  }
+  .toc-brand { font-size: 18px; }
+  .toc-links { flex-direction: row; gap: 16px; }
+  .toc-links a { padding: 2px 0; border-left: none; white-space: nowrap; }
+  .toc-links a.active { border-left: none; color: var(--accent); }
+  .toc-foot { display: none; }
+  .page { margin-left: 0; }
 }
 
 /* ---------- HERO ---------- */
