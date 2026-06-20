@@ -670,7 +670,30 @@ a:hover { text-decoration: underline; }
     var(--bg);
 }
 .fig-scale { position: absolute; top: 0; left: 0; transform-origin: top left; }
-.fig-inner { position: relative; width: 960px; height: 560px; }
+.fig-inner { position: relative; width: 980px; height: 600px; }
+
+/* step header — no box, same as the background */
+.fig-grouptitle {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 20px; letter-spacing: .05em;
+  text-transform: uppercase; color: var(--ink);
+}
+/* individual Inspect / Reason / Propose / Execute cards */
+.fig-card {
+  width: 100%; height: 100%;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--c, var(--accent));
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  padding: 12px 14px;
+  overflow: hidden;
+}
+.fig-sub-h { font-weight: 700; font-size: 15px; margin-bottom: 7px; color: var(--c, var(--accent)); }
+.fig-sub-b { font-size: 13px; line-height: 1.5; color: var(--ink); }
+.fig-sub-b strong { color: var(--c, var(--accent)); }
+.fig-sub-b em { font-style: italic; color: var(--muted); }
 
 .fig-comp { position: absolute; opacity: 0; will-change: transform, opacity; }
 .fig-comp.in { opacity: 1; }
@@ -704,11 +727,14 @@ a:hover { text-decoration: underline; }
 .fig-scrim.on { opacity: .82; }
 
 .fig-cap {
-  position: absolute; left: 24px; right: 24px; bottom: 20px; z-index: 7;
-  margin: 0; text-align: center;
-  font-size: clamp(15px, 1.7vw, 19px); line-height: 1.5; color: var(--ink);
+  position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%);
+  z-index: 7; margin: 0; text-align: center; max-width: 88%;
+  font-size: clamp(14px, 1.55vw, 17px); line-height: 1.45; color: var(--ink);
+  background: rgba(251, 250, 247, .9);
+  backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+  border: 1px solid var(--border); border-radius: 999px;
+  padding: 9px 20px; box-shadow: var(--shadow);
   opacity: 0; transition: opacity .4s ease;
-  text-shadow: 0 1px 10px var(--bg), 0 1px 2px var(--bg);
 }
 .fig-cap.show { opacity: 1; }
 .fig-cap strong { color: var(--accent-deep); }
