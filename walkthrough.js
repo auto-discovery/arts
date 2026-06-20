@@ -39,8 +39,9 @@
       '</svg></div>';
   }
   function spark(d, c) {
-    return '<svg class="fig-spark" viewBox="0 0 72 26"><path d="' + d + '" fill="none" stroke="' + c +
-           '" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    return '<svg class="fig-spark" viewBox="0 0 64 28">' +
+           '<line x1="0" y1="25" x2="64" y2="25" stroke="#ece7df" stroke-width="2"/>' +
+           '<path d="' + d + '" fill="none" stroke="' + c + '" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   }
   function irow(score, d, label) {
     return '<div class="fig-irow"><span class="fig-chip">' + score + '</span>' +
@@ -71,9 +72,9 @@
   }
 
   var INSPECT = '<div class="fig-pp">Reads each node’s logs and reasons <em>why</em> it failed.</div>' +
-                irow('0.47', 'M2,22 L16,11 L28,6 L44,5 L70,5', 'MLP at ceiling') +
-                irow('0.15', 'M2,19 L24,18 L48,17 L70,17', 'RF, low potential') +
-                irow('0.10', 'M2,23 L20,19 L40,12 L58,6 L70,3', 'new architecture, undertrained');
+                irow('0.47', 'M2,20 L14,9 L30,5 L46,4 L62,4', 'MLP, plateaued') +
+                irow('0.15', 'M2,18 L32,16 L62,16', 'RF, low ceiling') +
+                irow('0.10', 'M2,23 L20,18 L40,11 L62,5', 'new, undertrained');
   var PROPOSE = '<div class="fig-pp">Samples diverse hypotheses with probabilities.</div>' +
                 bar('more epochs', '0.55', 100) + bar('use attention', '0.30', 55) + bar('pre-trained backbone', '0.15', 27);
   var EXECUTE = 'A coding agent writes code for the chosen hypothesis and runs it in a sandbox.' +

@@ -752,11 +752,11 @@ a:hover { text-decoration: underline; }
 .fig-comp { transform-origin: 0 0; }
 
 /* Inspect rows with training-curve sparklines */
-.fig-irow { display: grid; grid-template-columns: auto 60px 1fr; align-items: center; gap: 8px; margin: 4px 0; }
+.fig-irow { display: grid; grid-template-columns: auto 64px 1fr; align-items: center; gap: 13px; margin: 6px 0; }
 .fig-chip { font-weight: 700; font-size: 18px; color: var(--coral); background: var(--coral-soft);
   border-radius: 6px; padding: 2px 9px; text-align: center; }
-.fig-spark { width: 72px; height: 30px; display: block; }
-.fig-il { font-size: 18px; color: var(--muted); }
+.fig-spark { width: 64px; height: 28px; display: block; }
+.fig-il { font-size: 17px; color: var(--muted); white-space: nowrap; }
 
 /* Propose probability bars */
 .fig-pp { margin-bottom: 9px; }
