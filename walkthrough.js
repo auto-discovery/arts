@@ -1,27 +1,31 @@
 /* ARTS — cinematic assembly of Figure 1.
-   Each piece appears centre-stage with a caption, then settles into place. */
+   Pieces are authored at their LARGE (spotlight) size and scaled DOWN into the
+   diagram, so nothing is ever upscaled → stays crisp. */
 (function () {
   'use strict';
   var fig = document.getElementById('fig');
   if (!fig) return;
 
-  var W = 980, H = 600;
+  var W = 1060, H = 620;
   var inner   = document.getElementById('figInner');
-  var scale   = document.getElementById('figScale');
+  var scaleEl = document.getElementById('figScale');
   var stageEl = document.getElementById('figStage');
-  var scrim   = document.getElementById('figScrim');
   var capEl   = document.getElementById('figCap');
   var playBtn = document.getElementById('figPlay');
   var fill    = document.getElementById('figProgress');
 
-  /* ---- piece builders ---- */
-  function tree(st) {
+  /* ---------- builders (natural / large coordinates) ---------- */
+  function mag(mx, my) {
+    return '<g><circle cx="' + mx + '" cy="' + my + '" r="9" fill="#fff" stroke="var(--accent)" stroke-width="2.4"/>' +
+           '<line x1="' + (mx + 6.4) + '" y1="' + (my + 6.4) + '" x2="' + (mx + 12.5) + '" y2="' + (my + 12.5) + '" stroke="var(--accent)" stroke-width="2.6" stroke-linecap="round"/></g>';
+  }
+  function tree(st, magnify) {
     function n(cx, cy, label, cls) {
       return '<g class="wnode ' + cls + '"><circle cx="' + cx + '" cy="' + cy + '" r="22"/>' +
              '<text x="' + cx + '" y="' + cy + '" text-anchor="middle" dominant-baseline="central">' + label + '</text></g>';
     }
     var noNu = st.nu === 'hidden';
-    return '<div class="fig-tree"><svg viewBox="0 0 200 220">' +
+    return '<div class="fig-tree"><svg viewBox="0 0 200 224">' +
       '<g stroke-linecap="round">' +
         '<line class="wedge" x1="100" y1="40" x2="40"  y2="128"/>' +
         '<line class="wedge" x1="100" y1="40" x2="100" y2="128"/>' +
@@ -31,7 +35,21 @@
       n(100, 40, '0.00', 'root') +
       n(40, 128, '0.10', st.a) + n(100, 128, '0.15', st.b) + n(160, 128, '0.47', st.c) +
       (noNu ? '' : n(40, 200, '0.55', 'new')) +
+      (magnify ? mag(58, 110) + mag(118, 110) + mag(178, 110) : '') +
       '</svg></div>';
+  }
+  function spark(d, c) {
+    return '<svg class="fig-spark" viewBox="0 0 72 26"><path d="' + d + '" fill="none" stroke="' + c +
+           '" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  }
+  function irow(score, d, label) {
+    return '<div class="fig-irow"><span class="fig-chip">' + score + '</span>' +
+           spark(d, 'var(--coral)') + '<span class="fig-il">' + label + '</span></div>';
+  }
+  function bar(label, val, pct) {
+    return '<div class="fig-bar"><div class="fig-bar-top"><span>' + label + '</span>' +
+           '<span class="fig-bar-val">' + val + '</span></div>' +
+           '<div class="fig-bar-track"><div class="fig-bar-fill" style="width:' + pct + '%"></div></div></div>';
   }
   function header(t) { return '<div class="fig-grouptitle">' + t + '</div>'; }
   function card(c, head, body) {
@@ -39,48 +57,57 @@
   }
   function arrow(idn, d) {
     var m = 'ahm' + idn;
-    return '<svg viewBox="0 0 980 600" class="fig-arrows">' +
+    return '<svg viewBox="0 0 ' + W + ' ' + H + '" class="fig-arrows" preserveAspectRatio="none">' +
       '<defs><marker id="' + m + '" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">' +
       '<path d="M0,0 L7,3 L0,6 Z" fill="#b9b2a6"/></marker></defs>' +
-      '<path d="' + d + '" fill="none" stroke="#b9b2a6" stroke-width="2.4" marker-end="url(#' + m + ')"/>' +
-      '</svg>';
+      '<path d="' + d + '" fill="none" stroke="#b9b2a6" stroke-width="2.4" marker-end="url(#' + m + ')"/></svg>';
   }
   function arrowRepeat() {
-    return '<svg viewBox="0 0 980 600" class="fig-arrows">' +
-      '<defs><marker id="ahm5" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">' +
+    return '<svg viewBox="0 0 ' + W + ' ' + H + '" class="fig-arrows" preserveAspectRatio="none">' +
+      '<defs><marker id="ahm9" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">' +
       '<path d="M0,0 L7,3 L0,6 Z" fill="#b9b2a6"/></marker></defs>' +
-      '<path d="M40,488 L18,488 L18,214 L36,214" fill="none" stroke="#b9b2a6" stroke-width="2.4" marker-end="url(#ahm5)"/>' +
-      '<text x="9" y="356" font-size="13" fill="#8a8478" transform="rotate(-90 9,356)">repeat until budget runs out</text>' +
-      '</svg>';
+      '<path d="M24,470 L10,470 L10,236 L20,236" fill="none" stroke="#b9b2a6" stroke-width="2.4" marker-end="url(#ahm9)"/>' +
+      '<text x="9" y="360" font-size="13" fill="#8a8478" transform="rotate(-90 9,360)">repeat until budget runs out</text></svg>';
   }
 
-  /* ---- pieces & final layout (in 980x600 space). Arrows first so they sit behind. ---- */
-  var PIECES = {
-    aSel:    { x: 0, y: 0, w: 980, h: 600, flat: true, html: arrow(1, 'M252,210 L296,176') },
-    aB:      { x: 0, y: 0, w: 980, h: 600, flat: true, html: arrow(2, 'M684,176 L736,210') },
-    aExp:    { x: 0, y: 0, w: 980, h: 600, flat: true, html: arrow(3, 'M846,346 C846,452 770,486 688,486') },
-    aC:      { x: 0, y: 0, w: 980, h: 600, flat: true, html: arrow(4, 'M300,492 L204,492') },
-    aRepeat: { x: 0, y: 0, w: 980, h: 600, flat: true, html: arrowRepeat() },
-    treeA:   { x: 40,  y: 130, w: 210, h: 210, html: tree({ a: 'cand', b: 'cand', c: 'cand', nu: 'hidden' }) },
-    selHead: { x: 300, y: 96,  w: 380, h: 36,  html: header('Node&nbsp;Selection') },
-    inspect: { x: 300, y: 146, w: 182, h: 158, html: card('var(--accent)', '🔍 Inspect',
-                 'Reads each node’s logs and reasons <em>why</em> it failed.<br>0.47 &mdash; MLP at ceiling<br>0.15 &mdash; RF, low potential<br>0.10 &mdash; new architecture, undertrained') },
-    reason:  { x: 498, y: 146, w: 182, h: 158, html: card('var(--blue)', '🧠 Reason',
+  var INSPECT = irow('0.47', 'M2,22 L16,11 L28,6 L44,5 L70,5', 'MLP at ceiling') +
+                irow('0.15', 'M2,19 L24,18 L48,17 L70,17', 'RF, low potential') +
+                irow('0.10', 'M2,23 L20,19 L40,12 L58,6 L70,3', 'new architecture, undertrained');
+  var PROPOSE = '<div class="fig-pp">Samples diverse hypotheses with probabilities.</div>' +
+                bar('more epochs', '0.55', 100) + bar('use attention', '0.30', 55) + bar('pre-trained backbone', '0.15', 27);
+  var EXECUTE = 'A coding agent writes code for the chosen hypothesis and runs it in a sandbox.' +
+                '<div class="fig-rwrs"><span>Read</span><span>Write</span><span>Run</span><span>Score</span></div>' +
+                '<div class="fig-newnode">&rarr; new node <strong>0.55</strong></div>';
+
+  /* ---------- pieces: natW/natH = large size, slot {x,y,s} = settled ---------- */
+  var P = {
+    // arrows first (paint behind), full-stage, settle at (0,0) scale 1
+    aSel:    { natW: W, natH: H, x: 0, y: 0, s: 1, flat: true, html: arrow(1, 'M182,235 L210,224') },
+    aB:      { natW: W, natH: H, x: 0, y: 0, s: 1, flat: true, html: arrow(2, 'M678,224 L742,232') },
+    aExp:    { natW: W, natH: H, x: 0, y: 0, s: 1, flat: true, html: arrow(3, 'M824,322 C824,432 760,470 690,470') },
+    aC:      { natW: W, natH: H, x: 0, y: 0, s: 1, flat: true, html: arrow(4, 'M352,486 L186,486') },
+    aRepeat: { natW: W, natH: H, x: 0, y: 0, s: 1, flat: true, html: arrowRepeat() },
+
+    treeA:   { natW: 340, natH: 360, x: 24,  y: 158, s: 0.46, html: tree({ a: 'cand', b: 'cand', c: 'cand', nu: 'hidden' }, false) },
+    selHead: { natW: 460, natH: 64,  x: 300, y: 92,  s: 0.7,  html: header('Node&nbsp;Selection') },
+    inspect: { natW: 360, natH: 214, x: 215, y: 150, s: 0.42, html: card('var(--accent)', '🔍 Inspect', INSPECT) },
+    magTree: { natW: 340, natH: 360, x: 384, y: 150, s: 0.36, html: tree({ a: 'cand', b: 'cand', c: 'cand', nu: 'hidden' }, true) },
+    reason:  { natW: 360, natH: 188, x: 524, y: 150, s: 0.42, html: card('var(--blue)', '🧠 Reason',
                  '0.47 is the highest score an MLP can reach. The new architecture has the highest potential.<br><strong>&rarr; Select 0.10</strong>') },
-    treeB:   { x: 740, y: 130, w: 210, h: 210, html: tree({ a: 'selected', b: 'cand', c: 'cand', nu: 'hidden' }) },
-    expHead: { x: 300, y: 372, w: 380, h: 36,  html: header('Node&nbsp;Expansion') },
-    propose: { x: 300, y: 422, w: 182, h: 158, html: card('var(--pink)', '🎲 Propose',
-                 'Samples diverse hypotheses with probabilities.<br>more epochs &mdash; 0.55<br>use attention &mdash; 0.30<br>use pre-trained backbone &mdash; 0.15') },
-    execute: { x: 498, y: 422, w: 182, h: 158, html: card('var(--green)', '⚙️ Execute',
-                 'A coding agent writes code for the chosen hypothesis and runs it in a sandbox.<br>Read · Write · Run · Score<br><strong>&rarr; new node 0.55</strong>') },
-    treeC:   { x: 40,  y: 388, w: 210, h: 210, html: tree({ a: 'selected', b: 'cand', c: 'cand', nu: 'new' }) }
+    treeB:   { natW: 340, natH: 360, x: 746, y: 158, s: 0.46, html: tree({ a: 'selected', b: 'cand', c: 'cand', nu: 'hidden' }, false) },
+
+    expHead: { natW: 460, natH: 64,  x: 355, y: 348, s: 0.7,  html: header('Node&nbsp;Expansion') },
+    propose: { natW: 360, natH: 244, x: 355, y: 406, s: 0.45, html: card('var(--pink)', '🎲 Propose', PROPOSE) },
+    execute: { natW: 360, natH: 226, x: 525, y: 406, s: 0.45, html: card('var(--green)', '⚙️ Execute', EXECUTE) },
+    treeC:   { natW: 340, natH: 360, x: 24,  y: 408, s: 0.46, html: tree({ a: 'selected', b: 'cand', c: 'cand', nu: 'new' }, false) }
   };
 
   var BEATS = [
     { id: 'treeA',   cap: '<strong>The search tree.</strong> Each node is one validated experiment — a hypothesis with its code, logs and score.' },
     { id: 'selHead', arrow: 'aSel', cap: '<strong>Node selection.</strong> The scientist decides which node is most worth expanding next.' },
-    { id: 'inspect', cap: '<strong>Inspect.</strong> It reads every candidate’s logs and reasons about <em>why</em> each one failed.' },
-    { id: 'reason',  cap: '<strong>Reason.</strong> 0.47 has plateaued; 0.10 has the most headroom — so it selects 0.10.' },
+    { id: 'inspect', cap: '<strong>Inspect.</strong> It reads every candidate’s training curves and logs to see <em>why</em> each one stalled.' },
+    { id: 'magTree', cap: '<strong>Looking closely.</strong> It examines the inspected nodes — 0.47 has plateaued, 0.10 is just undertrained.' },
+    { id: 'reason',  cap: '<strong>Reason.</strong> 0.10 has the most headroom, so the scientist selects it over the higher-scoring 0.47.' },
     { id: 'treeB',   arrow: 'aB', cap: 'The selected node, <strong>0.10</strong>, becomes the parent to expand.' },
     { id: 'expHead', arrow: 'aExp', cap: '<strong>Node expansion.</strong> Now the scientist generates and runs a new hypothesis.' },
     { id: 'propose', cap: '<strong>Propose.</strong> Verbalized sampling proposes a diverse set of hypotheses with probabilities.' },
@@ -89,14 +116,13 @@
     { id: 'aRepeat', cap: 'One full search step. <strong>Repeat</strong> until the budget runs out.' }
   ];
 
-  /* ---- build DOM ---- */
+  /* ---------- build DOM ---------- */
   var el = {};
-  Object.keys(PIECES).forEach(function (id) {
-    var p = PIECES[id];
+  Object.keys(P).forEach(function (id) {
+    var p = P[id];
     var d = document.createElement('div');
     d.className = 'fig-comp';
-    d.style.left = p.x + 'px'; d.style.top = p.y + 'px';
-    d.style.width = p.w + 'px'; d.style.height = p.h + 'px';
+    d.style.width = p.natW + 'px'; d.style.height = p.natH + 'px';
     d.innerHTML = p.html;
     inner.appendChild(d);
     el[id] = d;
@@ -104,50 +130,39 @@
 
   function fit() {
     var s = stageEl.clientWidth / W;
-    scale.style.transform = 'scale(' + s + ')';
+    scaleEl.style.transform = 'scale(' + s + ')';
     stageEl.style.height = (H * s) + 'px';
   }
   fit();
   window.addEventListener('resize', fit);
 
-  /* ---- timeline ---- */
-  var ENTER = 700, HOLD = 2100, SETTLE = 950, GAP = 500, ARROW_HOLD = 3000, END_HOLD = 3200;
+  function settleT(p) { return 'translate(' + p.x + 'px,' + p.y + 'px) scale(' + p.s + ')'; }
+  function spotT(p)   { return 'translate(' + ((W - p.natW) / 2) + 'px,' + ((H - p.natH) / 2) + 'px) scale(1)'; }
+
+  /* ---------- timeline ---------- */
+  var ENTER = 700, HOLD = 2000, SETTLE = 950, GAP = 500, ARROW_HOLD = 3000, END_HOLD = 3200;
   var cur = 0, playing = false, timers = [], shown = new Set();
 
   function at(ms, fn) { timers.push(setTimeout(fn, ms)); }
   function clearTimers() { timers.forEach(clearTimeout); timers = []; }
-
-  function centreTransform(d) {
-    var cx = d.offsetLeft + d.offsetWidth / 2, cy = d.offsetTop + d.offsetHeight / 2;
-    var k = Math.min((W * 0.6) / d.offsetWidth, (H * 0.62) / d.offsetHeight, 1.85);
-    return 'translate(' + (W / 2 - cx) + 'px,' + (H / 2 - cy) + 'px) scale(' + k + ')';
-  }
 
   function resetAll() {
     shown = new Set();
     Object.keys(el).forEach(function (id) {
       var d = el[id];
       d.style.transition = 'none';
-      d.style.transform = '';
+      d.style.transform = settleT(P[id]);
       d.style.zIndex = '1';
       d.style.opacity = '0';
     });
     fill.style.transition = 'none'; fill.style.width = '0%';
     void inner.offsetWidth;
   }
-
-  function dimShown() {                 // fade the already-placed pieces so the centred one stands out
-    shown.forEach(function (id) { var c = el[id]; c.style.transition = 'opacity .45s ease'; c.style.opacity = '.13'; });
-  }
-  function restoreShown() {             // bring the placed pieces back to full strength
-    shown.forEach(function (id) { var c = el[id]; c.style.transition = 'opacity .5s ease'; c.style.opacity = '1'; });
-  }
-  function revealArrow(id) {            // a connecting arrow appears in its place
-    var c = el[id]; c.style.transition = 'opacity .6s ease'; c.style.opacity = '1'; shown.add(id);
-  }
+  function dimShown()     { shown.forEach(function (id) { var c = el[id]; c.style.transition = 'opacity .45s ease'; c.style.opacity = '.12'; }); }
+  function restoreShown() { shown.forEach(function (id) { var c = el[id]; c.style.transition = 'opacity .5s ease';  c.style.opacity = '1'; }); }
+  function revealArrow(id) { var c = el[id]; c.style.transition = 'opacity .6s ease'; c.style.opacity = '1'; shown.add(id); }
 
   function setCap(html) { capEl.classList.remove('show'); capEl.innerHTML = html; void capEl.offsetWidth; capEl.classList.add('show'); }
-
   function progress(i) {
     fill.style.transition = 'width ' + (ENTER + HOLD + SETTLE) + 'ms linear';
     fill.style.width = (((i + 1) / BEATS.length) * 100) + '%';
@@ -156,11 +171,11 @@
   function playBeat(i) {
     cur = i;
     if (i === 0) resetAll();
-    var b = BEATS[i], d = el[b.id];
+    var b = BEATS[i], d = el[b.id], p = P[b.id];
     setCap(b.cap);
     progress(i);
 
-    if (PIECES[b.id].flat) {                       // final repeat-loop arrow: bring the diagram back, fade it in
+    if (p.flat) {                                  // final repeat-loop arrow
       restoreShown();
       d.style.transition = 'opacity .7s ease';
       d.style.opacity = '1'; shown.add(b.id);
@@ -168,15 +183,15 @@
       return;
     }
 
-    dimShown();                                    // dim what's placed, bring this piece in CRISP at centre
+    dimShown();                                    // dim placed pieces; this one appears CRISP at native size
     d.style.transition = 'opacity .4s ease';
-    d.style.transform = centreTransform(d);
+    d.style.transform = spotT(p);
     d.style.zIndex = '6';
     d.style.opacity = '1';
 
-    at(ENTER + HOLD, function () {                  // settle into place; restore the rest; drop its arrow
+    at(ENTER + HOLD, function () {                  // settle (scale DOWN into slot); restore others; drop arrow
       d.style.transition = 'transform ' + SETTLE + 'ms cubic-bezier(.4,0,.2,1), opacity .45s ease';
-      d.style.transform = '';
+      d.style.transform = settleT(p);
       restoreShown();
       shown.add(b.id);
       if (b.arrow) revealArrow(b.arrow);
@@ -187,22 +202,14 @@
     });
   }
 
-  function play() {
-    playing = true; fig.setAttribute('data-playing', 'true');
-    clearTimers();
-    playBeat(cur >= BEATS.length ? 0 : cur);
-  }
-  function stop() {
-    playing = false; fig.setAttribute('data-playing', 'false');
-    clearTimers();
-    var w = getComputedStyle(fill).width; fill.style.transition = 'none'; fill.style.width = w;
-  }
+  function play() { playing = true;  fig.setAttribute('data-playing', 'true');  clearTimers(); playBeat(cur >= BEATS.length ? 0 : cur); }
+  function stop() { playing = false; fig.setAttribute('data-playing', 'false'); clearTimers();
+                    var w = getComputedStyle(fill).width; fill.style.transition = 'none'; fill.style.width = w; }
   function toggle() { if (playing) { stop(); fig.dataset.userPaused = '1'; } else { fig.dataset.userPaused = ''; play(); } }
 
   playBtn.addEventListener('click', function (e) { e.stopPropagation(); toggle(); });
   stageEl.addEventListener('click', toggle);
 
-  // autostart; pause when off-screen
   play();
   if ('IntersectionObserver' in window) {
     var io = new IntersectionObserver(function (entries) {
