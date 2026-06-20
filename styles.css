@@ -690,10 +690,14 @@ a:hover { text-decoration: underline; }
   padding: 12px 14px;
   overflow: hidden;
 }
-.fig-sub-h { font-weight: 700; font-size: 15px; margin-bottom: 7px; color: var(--c, var(--accent)); }
-.fig-sub-b { font-size: 13px; line-height: 1.5; color: var(--ink); }
+.fig-sub-h { font-weight: 700; font-size: 17px; margin-bottom: 8px; color: var(--c, var(--accent)); }
+.fig-sub-b { font-size: 15px; line-height: 1.5; color: var(--ink); }
 .fig-sub-b strong { color: var(--c, var(--accent)); }
 .fig-sub-b em { font-style: italic; color: var(--muted); }
+.fig-pp { font-size: 15px; line-height: 1.45; color: var(--ink); margin-bottom: 9px; }
+
+/* the animation gets more width than the text column */
+.fig-wrap { max-width: 1280px; }
 
 .fig-comp { position: absolute; opacity: 0; will-change: transform, opacity; }
 .fig-comp.in { opacity: 1; }
@@ -750,10 +754,10 @@ a:hover { text-decoration: underline; }
 
 /* Inspect rows with training-curve sparklines */
 .fig-irow { display: grid; grid-template-columns: auto 64px 1fr; align-items: center; gap: 9px; margin: 7px 0; }
-.fig-chip { font-weight: 700; font-size: 13px; color: var(--coral); background: var(--coral-soft);
-  border-radius: 6px; padding: 2px 8px; text-align: center; }
-.fig-spark { width: 64px; height: 24px; display: block; }
-.fig-il { font-size: 13px; color: var(--muted); }
+.fig-chip { font-weight: 700; font-size: 14px; color: var(--coral); background: var(--coral-soft);
+  border-radius: 6px; padding: 2px 9px; text-align: center; }
+.fig-spark { width: 64px; height: 26px; display: block; }
+.fig-il { font-size: 14px; color: var(--muted); }
 
 /* Propose probability bars */
 .fig-pp { margin-bottom: 9px; }

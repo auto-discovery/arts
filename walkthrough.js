@@ -6,7 +6,7 @@
   var fig = document.getElementById('fig');
   if (!fig) return;
 
-  var W = 1060, H = 620;
+  var W = 1230, H = 730;
   var inner   = document.getElementById('figInner');
   var scaleEl = document.getElementById('figScale');
   var stageEl = document.getElementById('figStage');
@@ -66,11 +66,12 @@
     return '<svg viewBox="0 0 ' + W + ' ' + H + '" class="fig-arrows" preserveAspectRatio="none">' +
       '<defs><marker id="ahm9" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">' +
       '<path d="M0,0 L7,3 L0,6 Z" fill="#b9b2a6"/></marker></defs>' +
-      '<path d="M24,470 L10,470 L10,236 L20,236" fill="none" stroke="#b9b2a6" stroke-width="2.4" marker-end="url(#ahm9)"/>' +
-      '<text x="9" y="360" font-size="13" fill="#8a8478" transform="rotate(-90 9,360)">repeat until budget runs out</text></svg>';
+      '<path d="M101,545 L70,545 L70,250 L99,250" fill="none" stroke="#b9b2a6" stroke-width="2.4" marker-end="url(#ahm9)"/>' +
+      '<text x="58" y="410" font-size="13" fill="#8a8478" transform="rotate(-90 58,410)">repeat until budget runs out</text></svg>';
   }
 
-  var INSPECT = irow('0.47', 'M2,22 L16,11 L28,6 L44,5 L70,5', 'MLP at ceiling') +
+  var INSPECT = '<div class="fig-pp">Reads each node’s logs and reasons <em>why</em> it failed.</div>' +
+                irow('0.47', 'M2,22 L16,11 L28,6 L44,5 L70,5', 'MLP at ceiling') +
                 irow('0.15', 'M2,19 L24,18 L48,17 L70,17', 'RF, low potential') +
                 irow('0.10', 'M2,23 L20,19 L40,12 L58,6 L70,3', 'new architecture, undertrained');
   var PROPOSE = '<div class="fig-pp">Samples diverse hypotheses with probabilities.</div>' +
@@ -82,24 +83,24 @@
   /* ---------- pieces: natW/natH = large size, slot {x,y,s} = settled ---------- */
   var P = {
     // arrows first (paint behind), full-stage, settle at (0,0) scale 1
-    aSel:    { natW: W, natH: H, x: 0, y: 0, s: 1, flat: true, html: arrow(1, 'M182,235 L210,224') },
-    aB:      { natW: W, natH: H, x: 0, y: 0, s: 1, flat: true, html: arrow(2, 'M678,224 L742,232') },
-    aExp:    { natW: W, natH: H, x: 0, y: 0, s: 1, flat: true, html: arrow(3, 'M824,322 C824,432 760,470 690,470') },
-    aC:      { natW: W, natH: H, x: 0, y: 0, s: 1, flat: true, html: arrow(4, 'M352,486 L186,486') },
+    aSel:    { natW: W, natH: H, x: 0, y: 0, s: 1, flat: true, html: arrow(1, 'M221,250 L247,238') },
+    aB:      { natW: W, natH: H, x: 0, y: 0, s: 1, flat: true, html: arrow(2, 'M983,243 L1009,250') },
+    aExp:    { natW: W, natH: H, x: 0, y: 0, s: 1, flat: true, html: arrow(3, 'M1070,310 C1070,470 1012,545 972,545') },
+    aC:      { natW: W, natH: H, x: 0, y: 0, s: 1, flat: true, html: arrow(4, 'M358,560 L223,560') },
     aRepeat: { natW: W, natH: H, x: 0, y: 0, s: 1, flat: true, html: arrowRepeat() },
 
-    treeA:   { natW: 340, natH: 360, x: 24,  y: 158, s: 0.46, html: tree({ a: 'cand', b: 'cand', c: 'cand', nu: 'hidden' }, false) },
-    selHead: { natW: 460, natH: 64,  x: 300, y: 92,  s: 0.7,  html: header('Node&nbsp;Selection') },
-    inspect: { natW: 360, natH: 214, x: 215, y: 150, s: 0.42, html: card('var(--accent)', '🔍 Inspect', INSPECT) },
-    magTree: { natW: 340, natH: 360, x: 384, y: 150, s: 0.36, html: tree({ a: 'cand', b: 'cand', c: 'cand', nu: 'hidden' }, true) },
-    reason:  { natW: 360, natH: 188, x: 524, y: 150, s: 0.42, html: card('var(--blue)', '🧠 Reason',
+    treeA:   { natW: 280, natH: 300, x: 101,  y: 180, s: 0.42, html: tree({ a: 'cand', b: 'cand', c: 'cand', nu: 'hidden' }, false) },
+    selHead: { natW: 560, natH: 70,  x: 363,  y: 112, s: 0.9,  html: header('Node&nbsp;Selection') },
+    inspect: { natW: 420, natH: 250, x: 249,  y: 180, s: 0.66, html: card('var(--accent)', '🔍 Inspect', INSPECT) },
+    magTree: { natW: 280, natH: 300, x: 556,  y: 184, s: 0.42, html: tree({ a: 'cand', b: 'cand', c: 'cand', nu: 'hidden' }, true) },
+    reason:  { natW: 420, natH: 200, x: 704,  y: 180, s: 0.66, html: card('var(--blue)', '🧠 Reason',
                  '0.47 is the highest score an MLP can reach. The new architecture has the highest potential.<br><strong>&rarr; Select 0.10</strong>') },
-    treeB:   { natW: 340, natH: 360, x: 746, y: 158, s: 0.46, html: tree({ a: 'selected', b: 'cand', c: 'cand', nu: 'hidden' }, false) },
+    treeB:   { natW: 280, natH: 300, x: 1011, y: 180, s: 0.42, html: tree({ a: 'selected', b: 'cand', c: 'cand', nu: 'hidden' }, false) },
 
-    expHead: { natW: 460, natH: 64,  x: 355, y: 348, s: 0.7,  html: header('Node&nbsp;Expansion') },
-    propose: { natW: 360, natH: 244, x: 355, y: 406, s: 0.45, html: card('var(--pink)', '🎲 Propose', PROPOSE) },
-    execute: { natW: 360, natH: 226, x: 525, y: 406, s: 0.45, html: card('var(--green)', '⚙️ Execute', EXECUTE) },
-    treeC:   { natW: 340, natH: 360, x: 24,  y: 408, s: 0.46, html: tree({ a: 'selected', b: 'cand', c: 'cand', nu: 'new' }, false) }
+    expHead: { natW: 560, natH: 70,  x: 439,  y: 408, s: 0.8,  html: header('Node&nbsp;Expansion') },
+    propose: { natW: 420, natH: 256, x: 360,  y: 466, s: 0.66, html: card('var(--pink)', '🎲 Propose', PROPOSE) },
+    execute: { natW: 420, natH: 232, x: 690,  y: 466, s: 0.66, html: card('var(--green)', '⚙️ Execute', EXECUTE) },
+    treeC:   { natW: 280, natH: 300, x: 101,  y: 470, s: 0.42, html: tree({ a: 'selected', b: 'cand', c: 'cand', nu: 'new' }, false) }
   };
 
   var BEATS = [
