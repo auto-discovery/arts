@@ -6,7 +6,7 @@
   var fig = document.getElementById('fig');
   if (!fig) return;
 
-  var W = 1560, H = 770;
+  var W = 1654, H = 880;
   var inner   = document.getElementById('figInner');
   var scaleEl = document.getElementById('figScale');
   var stageEl = document.getElementById('figStage');
@@ -59,16 +59,16 @@
   function arrow(idn, d) {
     var m = 'ahm' + idn;
     return '<svg viewBox="0 0 ' + W + ' ' + H + '" class="fig-arrows" preserveAspectRatio="none">' +
-      '<defs><marker id="' + m + '" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">' +
-      '<path d="M0,0 L7,3 L0,6 Z" fill="#b9b2a6"/></marker></defs>' +
-      '<path d="' + d + '" fill="none" stroke="#b9b2a6" stroke-width="2.4" marker-end="url(#' + m + ')"/></svg>';
+      '<defs><marker id="' + m + '" markerWidth="10" markerHeight="10" refX="7" refY="4" orient="auto">' +
+      '<path d="M0,0 L8,4 L0,8 Z" fill="#a8a092"/></marker></defs>' +
+      '<path d="' + d + '" fill="none" stroke="#a8a092" stroke-width="2.8" marker-end="url(#' + m + ')"/></svg>';
   }
   function arrowRepeat() {
     return '<svg viewBox="0 0 ' + W + ' ' + H + '" class="fig-arrows" preserveAspectRatio="none">' +
-      '<defs><marker id="ahm9" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">' +
-      '<path d="M0,0 L7,3 L0,6 Z" fill="#b9b2a6"/></marker></defs>' +
-      '<path d="M24,560 L8,560 L8,238 L22,238" fill="none" stroke="#b9b2a6" stroke-width="2.4" marker-end="url(#ahm9)"/>' +
-      '<text x="2" y="430" font-size="13" fill="#8a8478" transform="rotate(-90 2,430)">repeat until budget runs out</text></svg>';
+      '<defs><marker id="ahm9" markerWidth="10" markerHeight="10" refX="7" refY="4" orient="auto">' +
+      '<path d="M0,0 L8,4 L0,8 Z" fill="#a8a092"/></marker></defs>' +
+      '<path d="M176,536 L176,424" fill="none" stroke="#a8a092" stroke-width="2.8" marker-end="url(#ahm9)"/>' +
+      '<text x="198" y="486" font-size="14" fill="#8a8478">repeat</text></svg>';
   }
 
   var INSPECT = '<div class="fig-pp">Reads each node’s logs and reasons <em>why</em> it failed.</div>' +
@@ -84,35 +84,35 @@
   /* ---------- pieces: natW/natH = large size, slot {x,y,s} = settled ---------- */
   var P = {
     // arrows first (paint behind), full-stage, settle at (0,0) scale 1
-    aSel:    { natW: W, natH: H, x: 0, y: 0, s: 1, flat: true, html: arrow(1, 'M256,238 L288,232') },
-    aB:      { natW: W, natH: H, x: 0, y: 0, s: 1, flat: true, html: arrow(2, 'M1274,238 L1306,232') },
-    aExp:    { natW: W, natH: H, x: 0, y: 0, s: 1, flat: true, html: arrow(3, 'M1423,378 C1423,470 1250,560 1150,560') },
-    aC:      { natW: W, natH: H, x: 0, y: 0, s: 1, flat: true, html: arrow(4, 'M428,586 L256,586') },
+    aSel:    { natW: W, natH: H, x: 0, y: 0, s: 1, flat: true, html: arrow(1, 'M322,232 L388,232') },
+    aB:      { natW: W, natH: H, x: 0, y: 0, s: 1, flat: true, html: arrow(2, 'M1478,366 L1478,532') },
+    aExp:    { natW: W, natH: H, x: 0, y: 0, s: 1, flat: true, html: arrow(3, 'M1332,656 L1266,656') },
+    aC:      { natW: W, natH: H, x: 0, y: 0, s: 1, flat: true, html: arrow(4, 'M388,656 L322,656') },
     aRepeat: { natW: W, natH: H, x: 0, y: 0, s: 1, flat: true, html: arrowRepeat() },
 
-    treeA:   { natW: 230, natH: 270, x: 24,   y: 104, s: 1, html: tree({ a: 'cand', b: 'cand', c: 'cand', nu: 'hidden' }, false) },
-    selHead: { natW: 460, natH: 60,  x: 551,  y: 30,  s: 1, html: header('Node&nbsp;Selection') },
-    inspect: { natW: 340, auto: true, x: 290, y: 102, s: 1, html: card('var(--accent)', '🔍 Inspect', INSPECT) },
-    magTree: { natW: 230, natH: 270, x: 666,  y: 104, s: 1, html: tree({ a: 'cand', b: 'cand', c: 'cand', nu: 'hidden' }, true) },
-    reason:  { natW: 340, auto: true, x: 932, y: 102, s: 1, html: card('var(--blue)', '🧠 Reason',
+    treeA:   { natW: 288, natH: 322, x: 32,   y: 100, s: 1, html: tree({ a: 'cand', b: 'cand', c: 'cand', nu: 'hidden' }, false) },
+    selHead: { natW: 480, natH: 64,  x: 743,  y: 24,  s: 1, html: header('Node&nbsp;Selection') },
+    inspect: { natW: 425, auto: true, x: 390,  y: 98,  s: 1, html: card('var(--accent)', '🔍 Inspect', INSPECT) },
+    magTree: { natW: 288, natH: 322, x: 839,  y: 100, s: 1, html: tree({ a: 'cand', b: 'cand', c: 'cand', nu: 'hidden' }, true) },
+    reason:  { natW: 425, auto: true, x: 1151, y: 98,  s: 1, html: card('var(--blue)', '🧠 Reason',
                  '0.47 is the highest score an MLP can reach. The new architecture has the highest potential.<br><strong>&rarr; Select 0.10</strong>') },
-    treeB:   { natW: 230, natH: 270, x: 1308, y: 104, s: 1, html: tree({ a: 'selected', b: 'cand', c: 'cand', nu: 'hidden' }, false) },
 
-    expHead: { natW: 460, natH: 60,  x: 558,  y: 384, s: 1, html: header('Node&nbsp;Expansion') },
-    propose: { natW: 340, auto: true, x: 430, y: 456, s: 1, html: card('var(--pink)', '🎲 Propose', PROPOSE) },
-    execute: { natW: 340, auto: true, x: 806, y: 456, s: 1, html: card('var(--green)', '⚙️ Execute', EXECUTE) },
-    treeC:   { natW: 230, natH: 270, x: 24,   y: 458, s: 1, html: tree({ a: 'selected', b: 'cand', c: 'cand', nu: 'new' }, false) }
+    expHead: { natW: 480, natH: 64,  x: 587,  y: 460, s: 1, html: header('Node&nbsp;Expansion') },
+    execute: { natW: 425, auto: true, x: 390,  y: 536, s: 1, html: card('var(--green)', '⚙️ Execute', EXECUTE) },
+    propose: { natW: 425, auto: true, x: 839,  y: 536, s: 1, html: card('var(--pink)', '🎲 Propose', PROPOSE) },
+    treeB:   { natW: 288, natH: 322, x: 1334, y: 536, s: 1, html: tree({ a: 'selected', b: 'cand', c: 'cand', nu: 'hidden' }, false) },
+    treeC:   { natW: 288, natH: 322, x: 32,   y: 536, s: 1, html: tree({ a: 'selected', b: 'cand', c: 'cand', nu: 'new' }, false) }
   };
 
   var BEATS = [
     { id: 'treeA',   cap: '<strong>The search tree.</strong> Each node is one validated experiment — a hypothesis with its code, logs and score.' },
-    { id: 'selHead', arrow: 'aSel', cap: '<strong>Node selection.</strong> The scientist decides which node is most worth expanding next.' },
-    { id: 'inspect', cap: '<strong>Inspect.</strong> It reads every candidate’s training curves and logs to see <em>why</em> each one stalled.' },
+    { id: 'selHead', cap: '<strong>Node selection.</strong> The scientist decides which node is most worth expanding next.' },
+    { id: 'inspect', arrow: 'aSel', cap: '<strong>Inspect.</strong> It reads every candidate’s training curves and logs to see <em>why</em> each one stalled.' },
     { id: 'magTree', cap: '<strong>Looking closely.</strong> It examines the inspected nodes — 0.47 has plateaued, 0.10 is just undertrained.' },
     { id: 'reason',  cap: '<strong>Reason.</strong> 0.10 has the most headroom, so the scientist selects it over the higher-scoring 0.47.' },
     { id: 'treeB',   arrow: 'aB', cap: 'The selected node, <strong>0.10</strong>, becomes the parent to expand.' },
-    { id: 'expHead', arrow: 'aExp', cap: '<strong>Node expansion.</strong> Now the scientist generates and runs a new hypothesis.' },
-    { id: 'propose', cap: '<strong>Propose.</strong> Verbalized sampling proposes a diverse set of hypotheses with probabilities.' },
+    { id: 'expHead', cap: '<strong>Node expansion.</strong> Now the scientist generates and runs a new hypothesis.' },
+    { id: 'propose', arrow: 'aExp', cap: '<strong>Propose.</strong> Verbalized sampling proposes a diverse set of hypotheses with probabilities.' },
     { id: 'execute', cap: '<strong>Execute.</strong> A coding agent writes the code, runs it in a sandbox and records the score.' },
     { id: 'treeC',   arrow: 'aC', cap: 'A new best node, <strong>0.55</strong>, is added to the tree.' },
     { id: 'aRepeat', cap: 'One full search step. <strong>Repeat</strong> until the budget runs out.' }

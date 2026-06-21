@@ -333,7 +333,9 @@ a:hover { text-decoration: underline; }
   align-items: start;
 }
 .gallery .span2 { grid-column: 1 / -1; }
-.gallery .span2 img { max-height: 360px; object-fit: contain; margin: 0 auto; }
+.gallery .span2 img { display: block; width: 100%; height: auto; }
+/* smaller taskgrid: card hugs a narrower image (no letterbox whitespace) */
+.gallery .span2.mid { max-width: 880px; margin-left: auto; margin-right: auto; }
 
 /* ---------- ABSTRACT ---------- */
 .abstract {
@@ -629,7 +631,7 @@ a:hover { text-decoration: underline; }
 .walk { position: relative; }
 .walk-stage { cursor: pointer; }
 .walk-playpause {
-  position: absolute; left: 16px; bottom: 16px; z-index: 3;
+  position: absolute; left: 16px; top: 16px; z-index: 3;
   width: 46px; height: 46px; border-radius: 50%; border: none; cursor: pointer;
   background: rgba(27,26,23,.82); color: #fff;
   backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
@@ -676,7 +678,7 @@ a:hover { text-decoration: underline; }
 .fig-grouptitle {
   width: 100%; height: 100%;
   display: flex; align-items: center; justify-content: center;
-  font-weight: 700; font-size: 26px; letter-spacing: .05em;
+  font-weight: 700; font-size: 32px; letter-spacing: .05em;
   text-transform: uppercase; color: var(--ink);
 }
 /* individual Inspect / Reason / Propose / Execute cards */
@@ -689,11 +691,11 @@ a:hover { text-decoration: underline; }
   box-shadow: var(--shadow);
   padding: 10px 12px;
 }
-.fig-sub-h { font-weight: 700; font-size: 25px; margin-bottom: 4px; color: var(--c, var(--accent)); }
-.fig-sub-b { font-size: 23px; line-height: 1.3; color: var(--ink); }
+.fig-sub-h { font-weight: 700; font-size: 31px; margin-bottom: 4px; color: var(--c, var(--accent)); }
+.fig-sub-b { font-size: 29px; line-height: 1.3; color: var(--ink); }
 .fig-sub-b strong { color: var(--c, var(--accent)); }
 .fig-sub-b em { font-style: italic; color: var(--muted); }
-.fig-pp { font-size: 22px; line-height: 1.28; color: var(--ink); margin-bottom: 5px; }
+.fig-pp { font-size: 28px; line-height: 1.28; color: var(--ink); margin-bottom: 5px; }
 
 /* the animation gets more width than the text column */
 .fig-wrap { max-width: 1360px; padding-left: 14px; padding-right: 14px; }
@@ -752,23 +754,96 @@ a:hover { text-decoration: underline; }
 .fig-comp { transform-origin: 0 0; }
 
 /* Inspect rows with training-curve sparklines */
-.fig-irow { display: grid; grid-template-columns: auto 76px 1fr; align-items: center; gap: 13px; margin: 6px 0; }
-.fig-chip { font-weight: 700; font-size: 21px; color: var(--coral); background: var(--coral-soft);
+.fig-irow { display: grid; grid-template-columns: auto 92px 1fr; align-items: center; gap: 13px; margin: 6px 0; }
+.fig-chip { font-weight: 700; font-size: 26px; color: var(--coral); background: var(--coral-soft);
   border-radius: 6px; padding: 2px 9px; text-align: center; }
-.fig-spark { width: 76px; height: 32px; display: block; }
-.fig-il { font-size: 21px; color: var(--muted); white-space: nowrap; }
+.fig-spark { width: 92px; height: 38px; display: block; }
+.fig-il { font-size: 26px; color: var(--muted); white-space: nowrap; }
 
 /* Propose probability bars */
 .fig-pp { margin-bottom: 9px; }
 .fig-bar { margin: 5px 0; }
-.fig-bar-top { display: flex; justify-content: space-between; font-size: 22px; }
+.fig-bar-top { display: flex; justify-content: space-between; font-size: 28px; }
 .fig-bar-val { font-weight: 700; color: var(--ink); }
 .fig-bar-track { height: 7px; border-radius: 99px; background: var(--pink-soft); margin-top: 3px; overflow: hidden; }
 .fig-bar-fill { height: 100%; background: var(--pink); border-radius: 99px; }
 
 /* Execute chips + new-node line */
 .fig-rwrs { display: flex; gap: 6px; margin: 6px 0 4px; }
-.fig-rwrs span { font-size: 18px; font-weight: 600; color: var(--green);
+.fig-rwrs span { font-size: 22px; font-weight: 600; color: var(--green);
   border: 1px solid var(--green); border-radius: 6px; padding: 2px 8px; }
-.fig-newnode { font-size: 22px; font-weight: 600; color: var(--blue); }
+.fig-newnode { font-size: 28px; font-weight: 600; color: var(--blue); }
 .fig-newnode strong { color: var(--blue); }
+
+/* ---------- SEARCH TREES (task selector) ---------- */
+.tree-tabs { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin: 0 0 26px; }
+.tree-tab {
+  font-family: var(--paper); font-size: 16px; font-weight: 600;
+  padding: 10px 22px; border-radius: 999px; cursor: pointer;
+  background: var(--bg-card); color: var(--muted); border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  transition: color .15s ease, background .15s ease, border-color .15s ease, transform .1s ease;
+}
+.tree-tab:hover { color: var(--ink); border-color: #d7cdf0; }
+.tree-tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.tree-fig { max-width: 940px; margin: 0 auto; }
+.tree-fig a { display: block; }
+.tree-fig img { display: block; width: 100%; height: auto; background: #fff; }
+.tree-hint { text-align: center; color: var(--faint); font-size: 13.5px; margin: 14px 0 0; }
+
+/* ---------- self-drawn search trees ---------- */
+.tree-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; align-items: start; }
+.tree-col { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px 22px 24px; overflow-x: auto; }
+.tree-col-h { font-weight: 700; font-size: 16px; margin: 0 0 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+.tree-col-h .who { color: var(--accent); }
+.tree-col-h.aira .who { color: var(--coral); }
+.tree-col-h .best { float: right; font-weight: 600; color: var(--muted); }
+
+.ttree { position: relative; }
+.tn {
+  position: relative; width: max-content; max-width: 100%;
+  margin: 8px 0 0 calc(var(--d) * 23px);
+  display: flex; align-items: center; gap: 9px;
+  padding: 6px 12px; border-radius: 10px;
+  border: 1.5px solid var(--border); background: var(--bg-card);
+  font-size: 15px; line-height: 1.2; color: var(--ink);
+}
+.tn:first-child { margin-top: 0; }
+.tn-sc { font-weight: 700; font-size: 12.5px; padding: 2px 8px; border-radius: 7px; white-space: nowrap; background: #ece7df; color: #6b6557; }
+.tn-lb { white-space: nowrap; }
+/* connectors */
+.tn::before { content: ''; position: absolute; left: -17px; top: 50%; width: 15px; height: 2px; background: #cdc7d8; }
+.tn::after  { content: ''; position: absolute; left: -17px; bottom: 50%; width: 2px; height: calc(var(--g) * 41px - 20px); background: #cdc7d8; }
+.tn[data-d="0"]::before, .tn[data-d="0"]::after { display: none; }
+/* kinds */
+.k-root  { border-color: #b9b2a6; }
+.k-mid   { border-color: var(--blue); }   .k-mid .tn-sc   { background: var(--blue-soft);  color: var(--blue); }
+.k-good  { border-color: var(--green); }  .k-good .tn-sc  { background: var(--green-soft); color: var(--green); }
+.k-best  { border-color: var(--green); border-width: 2.5px; background: var(--green-soft); font-weight: 600; }
+.k-best .tn-sc { background: var(--green); color: #fff; }
+.k-fail  { border-style: dashed; border-color: var(--coral); }  .k-fail .tn-sc { background: var(--coral-soft); color: var(--coral); }
+.tree-cap { max-width: var(--readw); margin: 24px auto 0; text-align: center; color: var(--muted); font-size: 16px; line-height: 1.55; }
+.tree-cap strong { color: var(--ink); }
+
+@media (max-width: 820px) {
+  .tree-pair { grid-template-columns: 1fr; }
+  .tn { font-size: 13.5px; }
+}
+
+/* qualities line + disclaimer for trees */
+.tree-tags { font-size: 13px; font-style: italic; color: var(--accent); margin: -6px 0 14px; }
+.tree-tags.aira { color: var(--coral); }
+.tree-note { max-width: var(--readw); margin: 14px auto 0; text-align: center; font-size: 13.5px; color: var(--faint); }
+.tree-note a { color: var(--accent-deep); }
+
+/* slightly smaller stat number so "ARTS* 4B ≈ o3" fits on one line */
+.stat-num.s-sm { font-size: clamp(22px, 2.9vw, 29px); white-space: nowrap; }
+
+/* BibTeX section: soft hero-style gradient instead of a flat band */
+#bibtex {
+  background:
+    radial-gradient(640px 320px at 50% 0%,   var(--accent-soft), transparent 70%),
+    radial-gradient(520px 280px at 10% 100%, var(--pink-soft),   transparent 72%),
+    radial-gradient(520px 280px at 90% 100%, var(--blue-soft),   transparent 72%),
+    var(--bg);
+}

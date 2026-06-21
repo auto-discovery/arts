@@ -18,7 +18,7 @@
   <!-- Single typeface: STIX Two Text (Times-metric, matches the NeurIPS paper font) -->
   <link href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=23" />
 </head>
 <body>
 
@@ -27,9 +27,10 @@
     <a class="toc-brand" href="#top"><span class="dot"></span>ARTS</a>
     <nav class="toc-links" id="tocLinks">
       <a href="#abstract">Abstract</a>
-      <a href="#method">Method</a>
       <a href="#results">Results</a>
+      <a href="#method">Method</a>
       <a href="#findings">Findings</a>
+      <a href="#trees">Trees</a>
       <a href="#bibtex">Citation</a>
     </nav>
     <div class="toc-foot">
@@ -47,7 +48,7 @@
         <div class="eyebrow"><span class="sparkle">✦</span> Agentic Reasoning for Tree Search</div>
 
         <h1 class="title">Learning the <span class="arts">ARTS</span> of Search<br />for Automated Discovery</h1>
-        <p class="title-sub">A reasoning agent that searches the space of scientific hypotheses by understanding <em>why</em> experiments fail, not just how they score.</p>
+        <p class="title-sub">Using a reasoning agent to search the space of hypotheses instead of heuristics.</p>
 
         <!-- TODO: confirm equal-contribution markers before camera-ready -->
         <p class="authors">
@@ -83,10 +84,11 @@
         </div>
 
         <p class="tldr">
-          The <strong>scientist</strong> inspects logs and failures to reason about <em>why</em> a node scored low,
-          proposes diverse hypotheses through <strong>verbalized sampling</strong>, and learns the search tree at
-          <strong>test time</strong> — so a <strong>4B</strong> model matches an <strong>o3-scale</strong> model
-          at <strong>~5&times; lower cost</strong>.
+          The <strong>scientist</strong> inspects each node's logs and failures to reason about <em>why</em> it scored low,
+          then proposes diverse hypotheses through <strong>verbalized sampling</strong>.
+          When the search history outgrows the context window, ARTS folds it into the model's weights with
+          <strong>test-time training</strong> — so a <strong>4B</strong> model matches an <strong>o3-scale</strong> model
+          at about <strong>a fifth of the inference cost</strong>.
         </p>
       </div>
     </header>
@@ -106,7 +108,7 @@
           <p class="fig-cap" id="figCap"></p>
         </div>
         <p class="walk-caption">
-          <strong>A single search step of ARTS</strong>, assembled piece by piece. Plays automatically &mdash; pause anytime.
+          <strong>A single search step of ARTS.</strong>
         </p>
       </div>
     </section>
@@ -115,61 +117,110 @@
     <section class="section band tint-lav" id="abstract">
       <div class="container narrow reveal">
         <div class="sec-head">
-          <p class="sec-eyebrow">Abstract</p>
-          <h2 class="h2">Search by reasoning, not by heuristic</h2>
+          <h2 class="h2">Abstract</h2>
         </div>
         <p class="abstract lead-cap">
-          Scientific discovery can be framed as an iterative search over the space of hypotheses and experiments.
-          Contemporary methods automate this search with heuristics such as MCTS, but these algorithms
-          <strong>conflate the merit of a hypothesis with the quality of its execution</strong> — a promising idea with a
-          rough first run is ranked below a modest idea that happens to be polished. They also prune the search history
-          as it outgrows the context window, discarding the very evidence that explains past failures. We propose
-          <strong>Agentic Reasoning for Tree Search (ARTS)</strong>, where a reasoning language model selects which
-          hypothesis to explore next. The model inspects prior execution logs with tools and diagnoses whether earlier
-          failures came from faulty implementations or bad hypotheses. To handle context length, ARTS uses
-          <strong>test-time training</strong> to instill the knowledge of the search tree into the model's weights.
-          Across 22 tasks from MLGym and MLEBench, ARTS outperforms leading algorithms with over
-          <strong>15.3% relative improvement</strong> in normalized score. With test-time training, a
-          <strong>Qwen3-4B</strong> agent matches closed frontier models such as Gemini-3 Pro and GPT o3 at up to
-          <strong>5&times; lower inference cost</strong>, and on partially observable RL tasks it even surpasses ARTS with
-          an o3 scientist by rediscovering the human-best recurrent-memory solution that heuristic methods prune away.
+          Scientific discovery can be formulated as an iterative search process over the space of hypotheses and experiments.
+          Contemporary methods navigate this space using heuristics such as MCTS. These algorithms
+          <strong>conflate the merit of a hypothesis with the quality of its experimental execution</strong>.
+          A promising hypothesis with preliminary execution is therefore ranked below a modest hypothesis whose execution is refined.
+          Moreover, prior methods prune the search logs as the search progresses because the accumulated history outgrows the context window.
+          We propose <strong>Agentic Reasoning for Tree Search (ARTS)</strong>, where we deploy a reasoning language model to navigate this space.
+          The model inspects prior execution logs, diagnoses whether earlier failures arose from faulty implementations or bad hypotheses,
+          and selects the hypothesis to build on next. To mitigate challenges with context length, ARTS uses
+          <strong>test-time training</strong> to instill the knowledge of search tree in the model weights.
+          Across 22 tasks from MLGym and MLEBench, we show that ARTS outperforms leading algorithms, with over
+          <strong>15.3% relative improvement</strong> in the normalized score. With test-time training we show that a
+          <strong>Qwen3-4B</strong> agent can match performance with closed-source frontier models like Gemini-3 Pro and GPT o3-reasoning with
+          upto <strong>5&times; lower inference cost</strong>. We further observe that on partially observable RL tasks, the test-time trained
+          Qwen3-4B scientist surpasses ARTS with the o3 scientist by rediscovering the human-best recurrent-memory solution that heuristic methods prune away.
         </p>
       </div>
     </section>
 
+    <!-- ===== RESULTS ===== -->
+    <section class="section" id="results">
+      <div class="container fig-wrap reveal">
+        <div class="sec-head">
+          <h2 class="h2">Results</h2>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <div class="stat-num">16&thinsp;/&thinsp;22</div>
+            <div class="stat-label">ML tasks where ARTS beats prior agents</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num">+15.3%</div>
+            <div class="stat-label">relative improvement in normalized score</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num s-sm">ARTS* 4B&nbsp;&asymp;&nbsp;o3</div>
+            <div class="stat-label">a test-time-trained 4B model nearly matches GPT&nbsp;o3</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num">1/5th cost</div>
+            <div class="stat-label"><strong>ARTS*</strong> reaches it at about a fifth of o3's inference cost</div>
+          </div>
+        </div>
+
+        <div class="gallery">
+          <figure class="figcard span2">
+            <img src="assets/fig-aggregates.png" alt="Aggregate normalized scores: mean, median, IQM and optimality gap." loading="lazy" />
+            <figcaption><strong>Reliable metrics.</strong> ARTS leads on mean, median and IQM with the smallest optimality gap (reliable metrics of Agarwal et al., 95% bootstrap CIs).</figcaption>
+          </figure>
+          <figure class="figcard span2 mid">
+            <img src="assets/fig-taskgrid.png" alt="Per-task normalized score across all evaluated tasks." loading="lazy" />
+            <figcaption><strong>Performance progression with time.</strong> Normalized score over wall-clock hours on each task. ARTS often trails early but pulls ahead, because it explores diverse hypotheses instead of committing to one too soon.</figcaption>
+          </figure>
+        </div>
+
+        <div class="callout">
+          <div class="c-ico">🧭</div>
+          <div>
+            <h3>Rediscovering solutions heuristics throw away</h3>
+            <p>
+              On the partially observable MetaMaze task, the test-time-trained Qwen3-4B scientist rediscovers the
+              human-best recurrent-memory solution that MCTS-style methods prune early — outperforming even ARTS with an
+              o3 scientist.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- ===== METHOD ===== -->
-    <section class="section" id="method">
+    <section class="section band tint-sky" id="method">
       <div class="container reveal">
         <div class="sec-head">
           <p class="sec-eyebrow">How it works</p>
           <h2 class="h2">Four ideas behind ARTS</h2>
-          <p>The scientist treats the search tree as evidence to reason over, not a score to climb.</p>
         </div>
 
         <div class="steps">
           <article class="step" style="--c: var(--accent); --c-soft: var(--accent-soft);">
             <div class="step-top">
               <div class="step-ico">🔍</div>
-              <h3>Inspect failures, don't trust the score</h3>
+              <h3>Inspect and reason about failures</h3>
               <span class="step-n">01</span>
             </div>
             <p>
-              Heuristic search conflates <strong>hypothesis quality</strong> with <strong>execution quality</strong>.
-              ARTS gives the model tools to read prior logs and diagnose <em>why</em> a node scored low — separating a
-              faulty implementation from a genuinely weak idea before deciding what to explore.
+              ARTS reads each node's logs and reasons about <em>why</em> it scored low — separating a
+              <strong>faulty implementation</strong> from a <strong>genuinely weak hypothesis</strong> — then reasons about
+              which node and which hypothesis are most worth pursuing next, instead of greedily following the score.
             </p>
           </article>
 
           <article class="step" style="--c: var(--blue); --c-soft: var(--blue-soft);">
             <div class="step-top">
-              <div class="step-ico">🧠</div>
-              <h3>Reason about what to explore next</h3>
+              <div class="step-ico">📋</div>
+              <h3>Audit the baseline to learn its structure</h3>
               <span class="step-n">02</span>
             </div>
             <p>
-              Instead of greedily following the highest score, the scientist reads code, logs and outcomes across the
-              tree and reasons about the most promising direction — <strong>reviving underdeveloped branches</strong>
-              that score-greedy methods abandon.
+              Before it changes anything, ARTS audits the baseline code — its <strong>architecture, training loop and
+              data pipeline</strong> — so it understands where each hypothesis can actually be applied and how to
+              implement it correctly.
             </p>
           </article>
 
@@ -202,70 +253,6 @@
       </div>
     </section>
 
-    <!-- ===== RESULTS ===== -->
-    <section class="section band tint-mint" id="results">
-      <div class="container reveal">
-        <div class="sec-head">
-          <p class="sec-eyebrow">Results</p>
-          <h2 class="h2">State of the art, at a fraction of the cost</h2>
-        </div>
-
-        <div class="stats">
-          <div class="stat">
-            <div class="stat-num">16&thinsp;/&thinsp;22</div>
-            <div class="stat-label">ML tasks where ARTS beats prior agents</div>
-          </div>
-          <div class="stat">
-            <div class="stat-num">+15.3%</div>
-            <div class="stat-label">relative improvement in normalized score</div>
-          </div>
-          <div class="stat">
-            <div class="stat-num">4B&nbsp;=&nbsp;o3</div>
-            <div class="stat-label">a 4B model matches an o3-scale model</div>
-          </div>
-          <div class="stat">
-            <div class="stat-num">~5&times;</div>
-            <div class="stat-label">lower inference cost</div>
-          </div>
-        </div>
-
-        <div class="gallery">
-          <figure class="figcard span2">
-            <img src="assets/fig-aggregates.png" alt="Aggregate normalized scores: mean, median, IQM and optimality gap." loading="lazy" />
-            <figcaption><strong>Reliable metrics.</strong> ARTS leads on mean, median and IQM with the smallest optimality gap (reliable metrics of Agarwal et al., 95% bootstrap CIs).</figcaption>
-          </figure>
-          <figure class="figcard">
-            <img src="assets/fig-perfprofile.png" alt="Performance profile: fraction of runs above a score threshold." loading="lazy" />
-            <figcaption><strong>Performance profiles.</strong> A larger fraction of ARTS runs clear every score threshold, so the gain holds across the distribution, not just on average.</figcaption>
-          </figure>
-          <figure class="figcard">
-            <img src="assets/fig-progression.png" alt="Normalized score over wall-clock time on Vesuvius and HMS Brain." loading="lazy" />
-            <figcaption><strong>Score over time.</strong> On representative tasks ARTS climbs toward the human-best frontier faster than prior agents.</figcaption>
-          </figure>
-          <figure class="figcard span2">
-            <img src="assets/fig-probimprove.png" alt="Probability of improvement of ARTS over each baseline." loading="lazy" />
-            <figcaption><strong>Probability of improvement.</strong> ARTS beats Linear, AIRA and MLEvolve well above the 0.5 chance line.</figcaption>
-          </figure>
-          <figure class="figcard span2">
-            <img src="assets/fig-taskgrid.png" alt="Per-task normalized score across all evaluated tasks." loading="lazy" />
-            <figcaption><strong>Per-task breakdown.</strong> Normalized score on each task. ARTS holds the lead broadly rather than winning on a handful of tasks.</figcaption>
-          </figure>
-        </div>
-
-        <div class="callout">
-          <div class="c-ico">🧭</div>
-          <div>
-            <h3>Rediscovering solutions heuristics throw away</h3>
-            <p>
-              On the partially observable MetaMaze task, the test-time-trained Qwen3-4B scientist rediscovers the
-              human-best recurrent-memory solution that MCTS-style methods prune early — outperforming even ARTS with an
-              o3 scientist.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <!-- ===== FINDINGS ===== -->
     <section class="section" id="findings">
       <div class="container reveal">
@@ -294,8 +281,29 @@
       </div>
     </section>
 
+    <!-- ===== SEARCH TREES ===== -->
+    <section class="section band tint-lav" id="trees">
+      <div class="container fig-wrap reveal">
+        <div class="sec-head">
+          <p class="sec-eyebrow">Search trees</p>
+          <h2 class="h2">ARTS vs. AIRA on real tasks</h2>
+          <p>Every node is one validated experiment. Pick a task to see how each method explores.</p>
+        </div>
+
+        <div class="tree-tabs" id="treeTabs" role="tablist">
+          <button class="tree-tab active" type="button" data-tree="vesuvius" data-cap="<strong>Vesuvius Ink Detection.</strong> ARTS (top) keeps several distinct strategies as siblings of the root and revives a strong branch a greedy search would drop; AIRA (bottom) commits narrowly and stalls.">Vesuvius</button>
+          <button class="tree-tab" type="button" data-tree="hms" data-cap="<strong>HMS Brain Activity.</strong> Both reach 0.875, but ARTS (top) gets there through broader, reasoned search — drafting a pretrained ResNet-50 — rather than AIRA’s (bottom) narrower path.">HMS&nbsp;Brain</button>
+          <button class="tree-tab" type="button" data-tree="metamaze" data-cap="<strong>MetaMaze.</strong> ARTS (top, 7 nodes) recovers from a config-truncation crash and rediscovers the human-best recurrent-memory solution; AIRA (bottom, 13 nodes) proposes an LSTM at depth 1 then abandons it.">MetaMaze</button>
+        </div>
+
+        <div class="tree-pair" id="treePair"></div>
+        <p class="tree-cap" id="treeCap"></p>
+        <p class="tree-note">Simplified for brevity — not the verbatim trees. For the full annotated search trees, see <a href="assets/arts_paper.pdf" target="_blank" rel="noopener">Appendix&nbsp;A–C</a> of the paper.</p>
+      </div>
+    </section>
+
     <!-- ===== BIBTEX ===== -->
-    <section class="section band tint-blush" id="bibtex">
+    <section class="section band" id="bibtex">
       <div class="container reveal">
         <div class="sec-head">
           <p class="sec-eyebrow">Cite</p>
@@ -303,7 +311,7 @@
         </div>
         <div class="bibtex-wrap">
           <button class="copy-btn" id="copyBtn" type="button" aria-label="Copy BibTeX">Copy</button>
-          <pre class="bibtex" id="bibtex"><code><span class="tok-key">@article</span>{juneja2026arts,
+          <pre class="bibtex" id="bibtexCode"><code><span class="tok-key">@article</span>{juneja2026arts,
   <span class="tok-field">title</span>   = {Learning the ARTS of Search for Automated Discovery},
   <span class="tok-field">author</span>  = {Juneja, Gurusha and Jain, Arnav Kumar and Nathani, Deepak and Wang, William Yang and Wang, Xin Eric},
   <span class="tok-field">journal</span> = {Preprint},
@@ -331,7 +339,7 @@
   </footer>
   </div><!-- /.page -->
 
-  <script src="script.js"></script>
-  <script src="walkthrough.js"></script>
+  <script src="script.js?v=23"></script>
+  <script src="walkthrough.js?v=23"></script>
 </body>
 </html>
