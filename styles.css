@@ -350,6 +350,8 @@ a:hover { text-decoration: underline; }
 .gallery .span2 img { display: block; width: 100%; height: auto; }
 /* smaller taskgrid: card hugs a narrower image (no letterbox whitespace) */
 .gallery .span2.mid { max-width: 880px; margin-left: auto; margin-right: auto; }
+/* keep stat row + callout the same width as the figures (one aligned column) */
+#results .stats, #results .callout { max-width: 880px; margin-left: auto; margin-right: auto; }
 
 /* ---------- ABSTRACT ---------- */
 .abstract {
